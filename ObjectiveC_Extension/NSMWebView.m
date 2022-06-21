@@ -9,37 +9,24 @@
 #import "NSMWebView.h"
 
 #import "NSColor+Extension.h"
+#import "NSException+Extension.h"
 #import "NSString+Extension.h"
 #import "NSMutableAttributedString+Extension.h"
 
 #import "NSMComputerInformation.h"
 #import "NSMLocalizationUtility.h"
 
-@implementation NSMWebViewNavigationBar
-@end
-
 @implementation NSMWebView
 
--(void)setLastAccessedUrl:(NSURL*)lastAccessedUrl
+// Private functions that may be overrided
+-(BOOL)shouldLoadUrl:(NSURL*)urlToOpenUrl withHttpBody:(NSData*)httpBody
 {
-    _lastAccessedUrl = lastAccessedUrl;
-    
-    if (self.hasNavigationBar)
-    {
-        [_navigationBar.addressBarField setStringValue:_lastAccessedUrl.absoluteString];
-    }
-}
--(void)setHideNavigationBar:(BOOL)hideNavigationBar
-{
-    _hideNavigationBar = hideNavigationBar;
-    
-    [self reloadWebViewIfNeeded];
+    return YES;
 }
 
 // WebView needed delegates
 -(WebView *)webView:(WebView *)sender createWebViewWithRequest:(NSURLRequest *)request
 {
-    self.lastAccessedUrl = request.URL;
     return sender;
 }
 -(void)webView:(WebView *)webView decidePolicyForNavigationAction:(NSDictionary *)actionInformation request:(NSURLRequest *)request
@@ -58,10 +45,10 @@
 {
     NSData* httpBody = ((WKNavigationAction *)navigationAction).request.HTTPBody;
     
-    self.lastAccessedUrl = ((WKNavigationAction *)navigationAction).request.URL;
-    if (![self shouldLoadUrl:_lastAccessedUrl withHttpBody:httpBody]) return nil;
+    NSURL* url = ((WKNavigationAction *)navigationAction).request.URL;
+    if (![self shouldLoadUrl:url withHttpBody:httpBody]) return nil;
     
-    [self loadURL:_lastAccessedUrl];
+    [self loadURL:url];
     return nil;
 }
 - (void)webView:(id)webView decidePolicyForNavigationAction:(id)navigationAction decisionHandler:(void (^)(NSInteger))decisionHandler
@@ -80,7 +67,7 @@
 }
 - (void)webView:(id)webView didCommitNavigation:(id)navigation
 {
-    self.lastAccessedUrl = [(WKWebView*)self.webView URL];
+    
 }
 
 // Initialization private methods
@@ -144,213 +131,23 @@
     [self addSubview:_webView];
     [_webView setAutoresizingMask:NSViewMinYMargin|NSViewMaxXMargin|NSViewMinXMargin|NSViewWidthSizable|NSViewHeightSizable];
 }
--(void)initializeNavigationBarWithHeight:(CGFloat)navigationBarHeight
-{
-    _navigationBar = [[NSMWebViewNavigationBar alloc] init];
-    
-    [self addSubview:_navigationBar];
-    [_navigationBar setAutoresizingMask:NSViewMinYMargin|NSViewMaxXMargin|NSViewMinXMargin|NSViewWidthSizable];
-    [_navigationBar setBackgroundColor:self.navigationBarColor];
-    
-    NSFont* buttonTextFont = self.navigationBarButtonsTextFont;
-    if (buttonTextFont != nil)
-    {
-        buttonTextFont = [NSFont fontWithDescriptor:buttonTextFont.fontDescriptor size:self.navigationBarButtonsTextSize];
-    }
-    else
-    {
-        buttonTextFont = [NSFont systemFontOfSize:self.navigationBarButtonsTextSize];
-    }
-    
-    NSFont* addressTextFont = self.navigationBarAddressFieldTextFont;
-    if (addressTextFont != nil)
-    {
-        addressTextFont = [NSFont fontWithDescriptor:addressTextFont.fontDescriptor size:self.navigationBarAddressFieldTextSize];
-    }
-    else
-    {
-        addressTextFont = [NSFont systemFontOfSize:self.navigationBarAddressFieldTextSize];
-    }
-    
-    CGFloat fullWidth = _navigationBar.frame.size.width;
-    CGFloat leftMargin = self.navigationBarLeftMargin;
-    
-    _navigationBar.addressBarField = [[NSTextField alloc] init];
-    _navigationBar.refreshButton = [[NSButton alloc] init];
-    [_navigationBar addSubview:_navigationBar.addressBarField];
-    [_navigationBar addSubview:_navigationBar.refreshButton];
-    
-    
-    [_navigationBar.addressBarField setAutoresizingMask:NSViewWidthSizable];
-    [_navigationBar.addressBarField setBordered:NO];
-    [_navigationBar.addressBarField setEditable:NO];
-    [_navigationBar.addressBarField setBackgroundColor:self.navigationBarColor];
-    [_navigationBar.addressBarField setFont:addressTextFont];
-    [_navigationBar.addressBarField setStringValue:VMMLocalizationNotNeeded(@"Tj")];
-    CGFloat addressMaxHeight = _navigationBar.addressBarField.attributedStringValue.size.height;
-    [_navigationBar.addressBarField setFrame:NSMakeRect(leftMargin, (navigationBarHeight - addressMaxHeight)/2,
-                                                        fullWidth - navigationBarHeight - leftMargin, addressMaxHeight)];
-    [_navigationBar.addressBarField setStringValue:@""];
-    
-    
-    [_navigationBar.refreshButton.cell setHighlightsBy:NSNoCellMask];
-    [_navigationBar.refreshButton setBordered:NO];
-    
-    NSMutableAttributedString* title = [[NSMutableAttributedString alloc] initWithString:@"⟳"];
-    [title setFont:buttonTextFont];
-    [title setFontColor:self.navigationBarButtonsTextColor];
-    [_navigationBar.refreshButton setAttributedTitle:title];
-    
-    [_navigationBar.refreshButton setTarget:self];
-    [_navigationBar.refreshButton setAction:@selector(refreshButtonPressed:)];
-    [_navigationBar.refreshButton setAutoresizingMask:NSViewMaxYMargin|NSViewMinYMargin|NSViewMinXMargin];
-    [_navigationBar.refreshButton setFrame:NSMakeRect(fullWidth - navigationBarHeight, 0, navigationBarHeight, navigationBarHeight)];
-}
--(void)initializeErrorLabel
-{
-    _webViewErrorLabel = [[NSTextField alloc] init];
-    
-    [self addSubview:_webViewErrorLabel];
-    [_webViewErrorLabel setAutoresizingMask:NSViewMaxYMargin|NSViewMinYMargin|NSViewWidthSizable];
-    
-    NSFont* webViewTextFont = self.webViewErrorLabelTextFont;
-    if (webViewTextFont != nil)
-    {
-        webViewTextFont = [NSFont fontWithDescriptor:webViewTextFont.fontDescriptor size:self.webViewErrorLabelTextSize];
-    }
-    else
-    {
-        webViewTextFont = [NSFont systemFontOfSize:self.webViewErrorLabelTextSize];
-    }
-    [_webViewErrorLabel setFont:webViewTextFont];
-    [_webViewErrorLabel setEditable:NO];
-    [_webViewErrorLabel setBordered:NO];
-    [_webViewErrorLabel setSelectable:NO];
-    [_webViewErrorLabel setAlignment:IS_SYSTEM_MAC_OS_10_11_OR_SUPERIOR ? NSTextAlignmentCenter : NSCenterTextAlignment];
-    [_webViewErrorLabel setBackgroundColor:[NSColor clearColor]];
-    [_webViewErrorLabel setTextColor:[NSColor whiteColor]];
-    [self setErrorLabelHidden:YES];
-}
--(void)initializeOtherComponents
-{
-    
-}
 -(void)reloadWebViewIfNeeded
 {
     @synchronized(self)
     {
         BOOL loadingForTheFirstTime = (_webView == nil);
         
-        if (_webViewErrorLabel)
-        {
-            [_webViewErrorLabel setStringValue:@""];
-            [self setErrorLabelHidden:YES];
-        }
-        
-        BOOL hasNavigationBar = self.hasNavigationBar;
-        
         CGFloat width = self.frame.size.width;
-        CGFloat navigationBarHeight = 0;
-        
-        if (hasNavigationBar)
-        {
-            navigationBarHeight = self.navigationBarHeight;
-            if (!_navigationBar) [self initializeNavigationBarWithHeight:navigationBarHeight];
-        }
         
         if (loadingForTheFirstTime)
         {
             [self initializeWebView];
-            [self initializeErrorLabel];
         }
         
-        CGFloat webViewHeight = self.frame.size.height - navigationBarHeight;
-        
-        if (hasNavigationBar)
-        {
-            [_navigationBar setFrame:NSMakeRect(0, webViewHeight, width, navigationBarHeight)];
-        }
+        CGFloat webViewHeight = self.frame.size.height;
         
         [_webView setFrame:NSMakeRect(0, 0, width, webViewHeight)];
-        
-        if (loadingForTheFirstTime)
-        {
-            [self initializeOtherComponents];
-        }
     }
-}
-
-// Private functions
--(IBAction)refreshButtonPressed:(id)sender
-{
-    [self loadURL:_lastAccessedUrl];
-}
--(void)setErrorLabelHidden:(BOOL)isHidden
-{
-    _webViewErrorLabel.hidden = isHidden;
-    _webView.hidden = !isHidden;
-    
-    if (isHidden)
-    {
-        [self setBackgroundColor:[NSColor clearColor]];
-    }
-    else
-    {
-        [self setBackgroundColor:[NSColor blackColor]];
-    }
-}
-
-// Private functions that may be overrided
--(BOOL)hasNavigationBar
-{
-    return _urlLoaded && !_hideNavigationBar;
-}
--(CGFloat)navigationBarLeftMargin
-{
-    return 20.0;
-}
--(CGFloat)navigationBarHeight
-{
-    return 45.0;
-}
--(NSColor*)navigationBarColor
-{
-    if (IS_SYSTEM_MAC_OS_10_14_OR_SUPERIOR) {
-        return [NSColor windowBackgroundColor];
-    }
-    return RGB(209, 207, 209);
-}
--(NSFont*)navigationBarAddressFieldTextFont
-{
-    return nil;
-}
--(CGFloat)navigationBarAddressFieldTextSize
-{
-    return 15.0;
-}
--(NSFont*)navigationBarButtonsTextFont
-{
-    return nil;
-}
--(CGFloat)navigationBarButtonsTextSize
-{
-    return 30.0;
-}
--(NSColor*)navigationBarButtonsTextColor
-{
-    return [NSColor blackColor];
-}
--(NSFont*)webViewErrorLabelTextFont
-{
-    return [NSFont boldSystemFontOfSize:self.webViewErrorLabelTextSize];
-}
--(CGFloat)webViewErrorLabelTextSize
-{
-    return 25.0;
-}
--(BOOL)shouldLoadUrl:(NSURL*)urlToOpenUrl withHttpBody:(NSData*)httpBody
-{
-    return YES;
 }
 
 // Public functions
@@ -364,14 +161,12 @@
         if (![[NSFileManager defaultManager] fileExistsAtPath:mainFolderPluginPath] &&
             ![[NSFileManager defaultManager] fileExistsAtPath:userFolderPluginPath])
         {
-            [self showErrorMessage:VMMLocalizedString(@"You need Flash Player in order to watch YouTube videos in your macOS version")];
-            return NO;
+            @throw exception(NSInvalidArgumentException, @"You need Flash Player in order to watch YouTube videos in your macOS version");
         }
     }
     
     _urlLoaded = true;
     [self reloadWebViewIfNeeded];
-    self.lastAccessedUrl = url;
     
     if (_usingWkWebView)
     {
@@ -383,16 +178,6 @@
     }
     
     return YES;
-}
--(BOOL)loadURLWithString:(nonnull NSString*)website
-{
-    if (![website isAValidURL])
-    {
-        [self showErrorMessage:VMMLocalizedString(@"Invalid URL provided")];
-        return NO;
-    }
-    
-    return [self loadURL:[NSURL URLWithString:website]];
 }
 -(void)loadHTMLString:(nonnull NSString*)htmlPage
 {
@@ -408,20 +193,6 @@
     {
         [((WebView*)self.webView).mainFrame loadHTMLString:htmlPage baseURL:url];
     }
-}
--(void)showErrorMessage:(nonnull NSString*)errorMessage
-{
-    [self loadHTMLString:@"<HTML><BODY bgcolor=\"black\" style=\"margin: 0; padding: 0; height: 100%%; width: 100%%;\" oncontextmenu=\"return false;\"></BODY></HTML>"];
-    
-    [_webViewErrorLabel setStringValue:[errorMessage uppercaseString]];
-    CGFloat textHeight = _webViewErrorLabel.attributedStringValue.size.height;
-    
-    [_webViewErrorLabel setFrame:NSMakeRect(0, (self.frame.size.height - textHeight)/2, self.frame.size.width, textHeight)];
-    [self setErrorLabelHidden:NO];
-}
--(void)loadEmptyPage
-{
-    [self loadHTMLString:@""];
 }
 
 @end
