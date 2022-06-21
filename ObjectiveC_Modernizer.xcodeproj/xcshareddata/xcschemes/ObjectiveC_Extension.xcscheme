@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4E6C51061F7E8EB700A187E9"
-               BuildableName = "ObjectiveC_Extension.framework"
-               BlueprintName = "ObjectiveC_Extension"
-               ReferencedContainer = "container:ObjectiveC_Extension.xcodeproj">
+               BuildableName = "ObjectiveC_Modernizer.framework"
+               BlueprintName = "ObjectiveC_Modernizer"
+               ReferencedContainer = "container:ObjectiveC_Modernizer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -27,29 +27,27 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "4E6C51061F7E8EB700A187E9"
+            BuildableName = "ObjectiveC_Modernizer.framework"
+            BlueprintName = "ObjectiveC_Modernizer"
+            ReferencedContainer = "container:ObjectiveC_Modernizer.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4E6C510F1F7E8EB700A187E9"
-               BuildableName = "ObjectiveC_ExtensionTests.xctest"
-               BlueprintName = "ObjectiveC_ExtensionTests"
-               ReferencedContainer = "container:ObjectiveC_Extension.xcodeproj">
+               BuildableName = "ObjectiveC_ModernizerTests.xctest"
+               BlueprintName = "ObjectiveC_ModernizerTests"
+               ReferencedContainer = "container:ObjectiveC_Modernizer.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4E6C51061F7E8EB700A187E9"
-            BuildableName = "ObjectiveC_Extension.framework"
-            BlueprintName = "ObjectiveC_Extension"
-            ReferencedContainer = "container:ObjectiveC_Extension.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -65,13 +63,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4E6C51061F7E8EB700A187E9"
-            BuildableName = "ObjectiveC_Extension.framework"
-            BlueprintName = "ObjectiveC_Extension"
-            ReferencedContainer = "container:ObjectiveC_Extension.xcodeproj">
+            BuildableName = "ObjectiveC_Modernizer.framework"
+            BlueprintName = "ObjectiveC_Modernizer"
+            ReferencedContainer = "container:ObjectiveC_Modernizer.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -83,9 +79,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4E6C51061F7E8EB700A187E9"
-            BuildableName = "ObjectiveC_Extension.framework"
-            BlueprintName = "ObjectiveC_Extension"
-            ReferencedContainer = "container:ObjectiveC_Extension.xcodeproj">
+            BuildableName = "ObjectiveC_Modernizer.framework"
+            BlueprintName = "ObjectiveC_Modernizer"
+            ReferencedContainer = "container:ObjectiveC_Modernizer.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

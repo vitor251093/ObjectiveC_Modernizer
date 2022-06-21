@@ -11,15 +11,15 @@
 
 @implementation NSMutableString (VMMMutableString)
 
--(void)replaceOccurrencesOfString:(nonnull NSString *)target withString:(nonnull NSString *)replacement
+-(void)replace:(nonnull NSString *)target with:(nonnull NSString *)replacement
 {
     [self replaceOccurrencesOfString:target withString:replacement options:0 range:NSMakeRange(0, self.length)];
 }
 
--(void)replaceOccurrencesOfRegex:(nonnull NSString *)target withString:(nonnull NSString *)replacement
+-(void)replaceRegex:(nonnull NSString *)target with:(nonnull NSString *)replacement
 {
     NSRange range = NSMakeRange(0, self.length);
-    NSArray<NSString*>* matches = [self componentsMatchingWithRegex:target];
+    NSArray<NSString*>* matches = [self findAll:target];
     for (NSString* match in matches) {
         [self replaceOccurrencesOfString:match withString:replacement options:0 range:range];
     }

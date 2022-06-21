@@ -16,24 +16,7 @@
 #import "NSString+Extension.h"
 #import "NSMutableString+Extension.h"
 #import "VMMVideoCardManager.h"
-
-#if IM_IMPORTING_THE_OPENGL_FRAMEWORK == true
-    #import <OpenGL/OpenGL.h>
-#else
-    #import <dlfcn.h>
-    #import "VMMLogUtility.h"
-
-    #define kCGLRPVideoMemoryMegabytes 131
-    #define kCGLRPVideoMemory          120
-
-    struct _CGLRendererInfoObject {};
-    typedef struct _CGLRendererInfoObject  *CGLRendererInfoObj;
-
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wstrict-prototypes"
-    typedef void* (*arbitrary)();
-    #pragma clang diagnostic pop
-#endif
+#import <OpenGL/OpenGL.h>
 
 @implementation VMMVideoCard
 
@@ -57,11 +40,7 @@
         // The if below only exists for testing purposes, in case you want to override that value
         if (newDict[VMMVideoCardTemporaryKeyOpenGlApiMemorySizes] == nil)
         {
-            #if USE_THE_OPENGL_FRAMEWORK_WHEN_AVAILABLE == true || IM_IMPORTING_THE_OPENGL_FRAMEWORK == true
-                newDict[VMMVideoCardTemporaryKeyOpenGlApiMemorySizes] = [VMMVideoCard videoCardMemorySizesInMegabytesFromOpenGLAPI];
-            #else
-                newDict[VMMVideoCardTemporaryKeyOpenGlApiMemorySizes] = @[];
-            #endif
+            newDict[VMMVideoCardTemporaryKeyOpenGlApiMemorySizes] = [VMMVideoCard videoCardMemorySizesInMegabytesFromOpenGLAPI];
         }
         
         _dictionary = newDict;
@@ -84,7 +63,7 @@
     
     NSCharacterSet* charactersThatShouldBecomeSpaces = [NSCharacterSet characterSetWithCharactersInString:@"(),"];
     graphicCardName = [graphicCardName stringByReplacingCharactersInSet:charactersThatShouldBecomeSpaces withString:@" "];
-    NSArray<NSString*>* graphicCardNameComponents = [graphicCardName componentsSeparatedByString:@" "];
+    NSArray<NSString*>* graphicCardNameComponents = [graphicCardName split:@" "];
     
     if ([graphicCardNameComponents containsObject:@"INTEL"])
     {
@@ -120,11 +99,14 @@
     return nil;
 }
 
-#if IM_IMPORTING_THE_OPENGL_FRAMEWORK == true
 +(NSArray<NSNumber*>*)videoCardMemorySizesInMegabytesFromOpenGLAPI
 {
     // Reference:
     // https://developer.apple.com/library/content/qa/qa1168/_index.html
+    
+    if (!IsFrameworkOpenGLAvailable) {
+        return @[];
+    }
     
     GLint i, nrend = 0;
     GLint videoMemory = 0;
@@ -150,60 +132,6 @@
     }];
     return list;
 }
-#else
-#if USE_THE_OPENGL_FRAMEWORK_WHEN_AVAILABLE == true
-+(NSArray<NSNumber*>*)videoCardMemorySizesInMegabytesFromOpenGLAPI
-{
-    NSMutableArray<NSNumber*>* list = [[NSMutableArray alloc] init];
-    
-    @autoreleasepool
-    {
-        // Loading a framework dinamically is not trivial... References:
-        // Loading Objective-C Class:   https://stackoverflow.com/a/24266440/4370893
-        // Loading C int function:      https://stackoverflow.com/a/21375580/4370893
-        // Loading C/C++ void function: https://stackoverflow.com/a/1354569/4370893
-        
-        void *openglFramework = dlopen("System/Library/Frameworks/OpenGL.framework/OpenGL", RTLD_NOW);
-        if (!openglFramework) return @[];
-        
-        int32_t i, nrend = 0;
-        int32_t videoMemory = 0;
-        const int32_t displayMask = 0xFFFFFFFF;
-        
-        CGLRendererInfoObj rend;
-        
-        arbitrary queryRendererInfo;
-        *(void**)(&queryRendererInfo) = dlsym(openglFramework, "CGLQueryRendererInfo");
-        arbitrary describeRenderer;
-        *(void**)(&describeRenderer) = dlsym(openglFramework, "CGLDescribeRenderer");
-        arbitrary destroyRendererInfo;
-        *(void**)(&destroyRendererInfo) = dlsym(openglFramework, "CGLDestroyRendererInfo");
-        
-        queryRendererInfo((uint32_t)displayMask, &rend, &nrend);
-        for (i = 0; i < nrend; i++)
-        {
-            videoMemory = 0;
-            describeRenderer(rend, i, (IS_SYSTEM_MAC_OS_10_7_OR_SUPERIOR ? kCGLRPVideoMemoryMegabytes : kCGLRPVideoMemory), &videoMemory);
-            if (videoMemory != 0) [list addObject:@(videoMemory)];
-        }
-        destroyRendererInfo(rend);
-        
-        if (0 != dlclose(openglFramework)) {
-            NSDebugLog(@"dlclose failed! %s\n", dlerror());
-        }
-    }
-    
-    [list sortUsingComparator:^NSComparisonResult(NSNumber*  _Nonnull obj1, NSNumber*  _Nonnull obj2) {
-        NSInteger value1 = obj1.integerValue;
-        NSInteger value2 = obj2.integerValue;
-        if (value1 > value2) return NSOrderedAscending;
-        if (value1 < value2) return NSOrderedDescending;
-        return NSOrderedSame;
-    }];
-    return list;
-}
-#endif
-#endif
 
 -(NSString*)vendorIDFromVendorAndVendorIDKeysOnly
 {
@@ -301,7 +229,7 @@
     
     // AMD video card wasn't properly detected and enabled by macOS
     if ([trimName isEqualToString:@"AMD R9 xxx"]) return nil;
-    if ([trimName matchesWithRegex:@"AMD Radeon HD [6-8]xxx"]) return nil;
+    if ([trimName matches:@"AMD Radeon HD [6-8]xxx"]) return nil;
     
     return trimName;
 }
@@ -582,10 +510,10 @@
             int memSizeInt = -1;
             
             NSString* memSize = [_dictionary[VMMVideoCardMemorySizePciOrPcieKey] uppercaseString];
-            if (memSize == nil || memSize.length == 0) {
+            if (memSize == nil || memSize.isEmpty) {
                 memSize = [_dictionary[VMMVideoCardMemorySizeBuiltInKey] uppercaseString];
             }
-            if (memSize == nil || memSize.length == 0) {
+            if (memSize == nil || memSize.isEmpty) {
                 memSize = [_dictionary[VMMVideoCardMemorySizeBuiltInAlternateKey] uppercaseString];
             }
             

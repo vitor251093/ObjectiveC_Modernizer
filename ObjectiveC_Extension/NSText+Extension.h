@@ -12,8 +12,8 @@
 #import <Cocoa/Cocoa.h>
 
 @interface NSText (VMMText)
--(void)setSelectedRangeAsTheBeginOfTheField;
--(void)setSelectedRangeAsTheEndOfTheField;
+-(void)resetSelectedRangeToStart;
+-(void)resetSelectedRangeToEnd;
 @end
 
 @interface NSTextView (VMMTextView)
@@ -23,9 +23,8 @@
 @end
 
 @interface NSTextField (VMMTextField)
--(void)setSelectedRangeAsTheBeginOfTheField;
--(void)setSelectedRangeAsTheEndOfTheField;
--(void)setAnyStringValue:(NSString*)stringValue;
+-(void)resetSelectedRangeToStart;
+-(void)resetSelectedRangeToEnd;
 @end
 
 #endif

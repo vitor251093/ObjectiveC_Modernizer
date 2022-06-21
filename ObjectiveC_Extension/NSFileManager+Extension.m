@@ -11,6 +11,7 @@
 #import "VMMAlert.h"
 #import "NSArray+Extension.h"
 #import "NSData+Extension.h"
+#import "NSException+Extension.h"
 #import "NSTask+Extension.h"
 #import "NSString+Extension.h"
 #import "NSThread+Extension.h"
@@ -27,7 +28,7 @@
     
     if (error != nil)
     {
-        [VMMAlert showAlertOfType:VMMAlertTypeError withMessage:[NSString stringWithFormat:VMMLocalizedString(@"Error while creating symbolic link: %@"), error.localizedDescription]];
+        @throw [NSException exceptionWithError:error];
     }
     
     return created;
@@ -39,7 +40,7 @@
     
     if (error != nil)
     {
-        [VMMAlert showAlertOfType:VMMAlertTypeError withMessage:[NSString stringWithFormat:VMMLocalizedString(@"Error while creating folder: %@"), error.localizedDescription]];
+        @throw [NSException exceptionWithError:error];
     }
     
     return created;
@@ -56,8 +57,7 @@
     
     if (error != nil)
     {
-        [VMMAlert showAlertOfType:VMMAlertTypeError
-            withMessage:[NSString stringWithFormat:VMMLocalizedString(@"Error while moving file: %@"), error.localizedDescription]];
+        @throw [NSException exceptionWithError:error];
     }
     
     return created;
@@ -69,7 +69,7 @@
     
     if (error != nil)
     {
-        [VMMAlert showAlertOfType:VMMAlertTypeError withMessage:[NSString stringWithFormat:VMMLocalizedString(@"Error while copying file: %@"), error.localizedDescription]];
+        @throw [NSException exceptionWithError:error];
     }
     
     return created;
@@ -83,7 +83,7 @@
     
     if (error != nil)
     {
-        [VMMAlert showAlertOfType:VMMAlertTypeError withMessage:[NSString stringWithFormat:VMMLocalizedString(@"Error while removing file: %@"), error.localizedDescription]];
+        @throw [NSException exceptionWithError:error];
     }
     
     return created;
@@ -100,25 +100,12 @@
 }
 -(nullable NSArray<NSString*>*)contentsOfDirectoryAtPath:(nonnull NSString*)path
 {
-    if (![self fileExistsAtPath:path])
-    {
-        [VMMAlert showAlertOfType:VMMAlertTypeError withMessage:[NSString stringWithFormat:VMMLocalizedString(@"Error while listing folder contents: %@ doesn't exist."), path.lastPathComponent]];
-        return @[];
-    }
-    
-    if (![self directoryExistsAtPath:path])
-    {
-        [VMMAlert showAlertOfType:VMMAlertTypeError withMessage:[NSString stringWithFormat:VMMLocalizedString(@"Error while listing folder contents: %@ is not a folder."), path.lastPathComponent]];
-        return @[];
-    }
-    
     NSError* error;
     NSArray* created = [self contentsOfDirectoryAtPath:path error:&error];
     
     if (error != nil)
     {
-        [VMMAlert showAlertOfType:VMMAlertTypeError withMessage:[NSString stringWithFormat:VMMLocalizedString(@"Error while listing folder contents: %@"), error.localizedDescription]];
-        return @[];
+        @throw [NSException exceptionWithError:error];
     }
     
     NSMutableArray* createdMutable = [created mutableCopy];
@@ -130,7 +117,7 @@
 {
     @autoreleasepool
     {
-        return [[[[NSTask runProgram:@"find" withFlags:@[path,@"-name",fileName]] componentsSeparatedByString:@"\n"]
+        return [[[[NSTask runProgram:@"find" withFlags:@[path,@"-name",fileName]] split:@"\n"]
                     filter:^BOOL(NSString* object) { return ![object hasPrefix:@"find: "]; }]
                        map:^id(NSString* object)   { return  [object stringByReplacingOccurrencesOfString:@"//" withString:@"/"];}];
     }
@@ -142,7 +129,7 @@
     
     if (error != nil)
     {
-        [VMMAlert showAlertOfType:VMMAlertTypeError withMessage:[NSString stringWithFormat:VMMLocalizedString(@"Error while retrieving symbolic link destination: %@"),error.localizedDescription]];
+        @throw [NSException exceptionWithError:error];
     }
     
     return destination;
@@ -169,8 +156,16 @@
     
     @autoreleasepool
     {
-        NSDictionary *fileDictionary = [self attributesOfItemAtPath:path error:nil];
-        if (fileDictionary != nil) result = [fileDictionary[NSFileSize] unsignedLongLongValue];
+        NSError* error;
+        NSDictionary *fileDictionary = [self attributesOfItemAtPath:path error:&error];
+        if (error != nil)
+        {
+            @throw [NSException exceptionWithError:error];
+        }
+        
+        if (fileDictionary != nil) {
+            result = [fileDictionary[NSFileSize] unsignedLongLongValue];
+        }
     }
     
     return result;
@@ -181,7 +176,12 @@
     
     @autoreleasepool
     {
-        NSArray *filesArray = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:nil];
+        NSError* error;
+        NSArray *filesArray = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:&error];
+        if (error != nil)
+        {
+            @throw [NSException exceptionWithError:error];
+        }
         
         for (NSString* file in filesArray)
         {
@@ -244,7 +244,7 @@
 
 -(nullable NSString*)base64OfFileAtPath:(nonnull NSString*)path
 {
-    return [[NSData dataWithContentsOfFile:path] base64EncodedString];
+    return [[NSData safeDataWithContentsOfFile:path] base64EncodedString];
 }
 
 @end

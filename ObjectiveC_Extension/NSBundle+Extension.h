@@ -18,7 +18,7 @@
 -(BOOL)isAppTranslocationActive;
 -(BOOL)disableAppTranslocation;
 
-+(nullable NSBundle*)originalMainBundle;
++(nullable NSBundle*)realMainBundle;
 
 -(BOOL)preferExternalGPU;
 -(void)setPreferExternalGPU:(BOOL)prefer;

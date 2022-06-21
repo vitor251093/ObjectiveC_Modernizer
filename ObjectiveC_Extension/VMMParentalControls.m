@@ -35,7 +35,7 @@ static NSString* _Nonnull const VMMParentalControlsContentFilterWhiteListAddress
     @autoreleasepool
     {
         NSString* dsclOutputString = [NSTask runProgram:@"dscl" withFlags:@[@".", @"mcxexport", NSHomeDirectory()]];
-        if (dsclOutputString == nil || dsclOutputString.length == 0) return FALSE;
+        if (dsclOutputString == nil || dsclOutputString.isEmpty) return FALSE;
     }
     
     return TRUE;
@@ -49,7 +49,7 @@ static NSString* _Nonnull const VMMParentalControlsContentFilterWhiteListAddress
     @autoreleasepool
     {
         NSString* dsclOutputString = [NSTask runProgram:@"dscl" withFlags:@[@".", @"mcxexport", NSHomeDirectory(), appDomain, keyName]];
-        if (dsclOutputString == nil || dsclOutputString.length == 0) return nil;
+        if (dsclOutputString == nil || dsclOutputString.isEmpty) return nil;
         
         NSDictionary* dsclOutput = [VMMPropertyList propertyListWithArchivedString:dsclOutputString];
         if (dsclOutput == nil || [dsclOutput isKindOfClass:[NSDictionary class]] == FALSE) return nil;

@@ -64,7 +64,7 @@ static VMMDockProgressIndicator* progress_bar;
         }
         @catch(NSException* exception)
         {
-            NSBundle* mainBundle = [NSBundle originalMainBundle];
+            NSBundle* mainBundle = [NSBundle realMainBundle];
             
             @try
             {

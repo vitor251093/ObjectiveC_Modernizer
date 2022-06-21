@@ -13,9 +13,9 @@
 
 @interface NSMutableString (VMMMutableString)
 
--(void)replaceOccurrencesOfString:(nonnull NSString *)target withString:(nonnull NSString *)replacement;
+-(void)replace:(nonnull NSString *)target with:(nonnull NSString *)replacement;
 
--(void)replaceOccurrencesOfRegex:(nonnull NSString *)target withString:(nonnull NSString *)replacement;
+-(void)replaceRegex:(nonnull NSString *)target with:(nonnull NSString *)replacement;
 
 -(nonnull NSMutableString*)trim;
 

@@ -12,8 +12,8 @@
 #import <Cocoa/Cocoa.h>
 #import "VMMComputerInformation.h"
 
-#define VMMAppearanceDarkPreMojaveCompatible IS_SYSTEM_MAC_OS_10_10_OR_SUPERIOR
-#define VMMAppearanceDarkCompatible          IS_SYSTEM_MAC_OS_10_14_OR_SUPERIOR
+#define VMMAppearanceCompatible     IS_SYSTEM_MAC_OS_10_10_OR_SUPERIOR
+#define VMMAppearanceDarkCompatible IS_SYSTEM_MAC_OS_10_14_OR_SUPERIOR
 
 typedef NSString* VMMAppearanceName;
 

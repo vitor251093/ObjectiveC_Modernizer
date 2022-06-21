@@ -10,14 +10,16 @@
 
 @interface NSMutableArray<ObjectType> (VMMMutableArray)
 
--(nonnull NSMutableArray*)map:(_Nullable id (^_Nonnull)(id _Nonnull object))newObjectForObject;
--(nonnull NSMutableArray*)mapWithIndex:(_Nullable id (^_Nonnull)(id _Nonnull object, NSUInteger index))newObjectForObject;
+-(void)add:(nonnull id)anObject;
+-(void)add:(nonnull id)anObject atIndex:(NSUInteger)index;
+-(void)addAll:(nonnull NSArray *)otherArray;
+-(void)clear;
 -(nonnull NSMutableArray*)filter:(BOOL (^_Nonnull)(id _Nonnull object))newObjectForObject;
 -(nonnull NSMutableArray*)filterWithIndex:(BOOL (^_Nonnull)(id _Nonnull object, NSUInteger index))newObjectForObject;
+-(nonnull NSMutableArray*)map:(_Nullable id (^_Nonnull)(id _Nonnull object))newObjectForObject;
+-(nonnull NSMutableArray*)mapWithIndex:(_Nullable id (^_Nonnull)(id _Nonnull object, NSUInteger index))newObjectForObject;
+-(void)removeAll:(nonnull NSArray*)array;
 
--(void)sortAlphabeticallyByKey:(nonnull NSString*)key ascending:(BOOL)ascending;
--(void)sortAlphabeticallyAscending:(BOOL)ascending;
--(void)sortDictionariesWithKey:(nonnull NSString *)key orderingByValuesOrder:(nonnull NSArray*)value;
--(void)sortBySelector:(SEL _Nonnull)selector inOrder:(NSArray* _Nonnull)order;
+-(void)sortBySelector:(SEL _Nonnull)selector usingComparator:(NSInteger (^_Nonnull)(id _Nonnull object1, id _Nonnull object2))comparator;
 
 @end

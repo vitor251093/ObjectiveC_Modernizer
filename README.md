@@ -1,151 +1,15 @@
-# ObjectiveC_Extension
+# ObjectiveC_Modernizer
 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 Once I started developing my skills in Objective-C, I've noticed that while many things were pretty easy to do, others could be heavily simplified. I started with a `NSUtilities` class, which later became lots of extensions splitted in `+Extension` files. At some point, I had a separated folder for extensions and classes which I would import to almost every Objective-C project that I was involved.
 
-In order to improve that, I've decided to create a framework with those classes and extensions, in order to optimize my work. It should be useful for a large range of projects, so feel free to use it, and enjoy :)
-
-**IMPORTANT WARNING:** When using this project, configure the `ObjCExtensionConfig.h` file according to your needs. Don't worry, it takes just some seconds.
+In order to improve that, I've decided to create a framework with those classes and extensions, in order to optimize my work. That was _ObjectiveC\_Extension_. Then I've cleaned the project, added some more functions based in modern languages, and that's how _ObjectiveC\_Modernizer_ was created.
 
 ## Compatibility
-This is the best part of that framework. ObjectiveC_Extension is compatible with every version of macOS still compatible with Xcode 9, so it is compatible with macOS 10.6+. Obviously, that requires some workarounds and *hacks*. They will be listed in the end of that document.
-
-## New Classes (related with keycodes and devices)
-Those classes were made to simplify the use of HID devices input, making your code cleaner when working with them, and more Objective-C-like, since most of the code related with that is C-like and C++-like. It also gives you enums to find the value of virtual keycodes (useful to simulate keyboard key pressing) and usage keycodes (useful to detect which keyboard key was pressed).
-
-### VMMVirtualKeycodes
-A class which makes working with Mac Virtual Keycodes easier.
-
-```objectivec
-+(NSArray*)allKeyNames;
-```
-
-List of all the Mac Virtual Keycodes names.
-
-```objectivec
-+(NSDictionary*)virtualKeycodeNames;
-```
-
-Dictionary of the Mac Virtual Keycodes names by keycode.
-
-```objectivec
-+(NSString*)nameOfVirtualKeycode:(CGKeyCode)key;
-```
-
-Name of Mac Virtual Keycode by keycode.
-
-### VMMDeviceSimulator
-A class which simulate keyboard and cursor actions.
-
-```objectivec
-+(void)simulateCursorClickAtScreenPoint:(CGPoint)clickPoint
-```
-
-Simulates the mouse left-click on a specific screen point moving the cursor.
-
-```objectivec
-+(void)simulateVirtualKeycode:(CGKeyCode)keyCode withKeyDown:(BOOL)keyPressed;
-```
-
-Simulates the button press/release of a Mac Virtual Keycode.
-
-### VMMDeviceObserver
-A class which makes working with HID devices easier.
-
-```objectivec
-+(instancetype)sharedObserver;
-```
-
-HID device observer shared instance.
-
-```objectivec
--(void)observeDevicesOfTypes:(NSArray*)types forDelegate:(id<VMMDeviceObserverDelegate>)actionDelegate;
-```
-
-Adds object that should receive notifications of observer.
-
-```objectivec
--(void)stopObservingForDelegate:(id<VMMDeviceObserverDelegate>)actionDelegate;
-```
-
-Makes an object stop receiving the observer notifications.
-
-#### VMMDeviceObserverDelegate (Protocol)
-Protocol for `VMMDeviceObserver` delegate. All the methods below are optionals. The only thing mandatory is the `hidManager` property.
-
-```objectivec
-@property (nonatomic) IOHIDManagerRef hidManager;
-```
-
-Manager that makes any object capable of observing HID devices.
-
-```objectivec
--(void)observedConnectionOfDevice:(IOHIDDeviceRef)device;
-```
-
-Notify an object that a HID device has been connected.
-
-```objectivec
--(void)observedRemovalOfDevice:(IOHIDDeviceRef)device;
-```
-
-Notify an object that a HID device has been disconnected.
-
-```objectivec
--(void)observedEventWithName:(CFStringRef)name cookie:(IOHIDElementCookie)cookie usage:(uint32_t)usage value:(CFIndex)value device:(IOHIDDeviceRef)device;
-```
-
-Notify an object that a HID device has performed an event.
-
-```objectivec
--(void)observedReportWithID:(uint32_t)reportID data:(nonnull uint8_t*)report type:(IOHIDReportType)reportType length:(CFIndex)reportLength device:(nonnull IOHIDDeviceRef)device;
-````
-
-Notify an object that a HID device has reported something.
-
-### VMMUsageKeycode
-
-```objectivec
-+(NSArray*)allUsageNames;
-```
-
-Name of keyboard keys that have a usage keycode.
-
-```objectivec
-+(NSDictionary*)usageNamesByKeycode;
-```
-
-Name of keyboard keys by usage keycode.
-
-```objectivec
-+(NSString*)nameOfUsageKeycode:(uint32_t)key;
-```
-
-Name of keyboard key with specific usage keycode.
-
+This is the best part of that framework. ObjectiveC_Modernizer is compatible with every version of macOS still compatible with Xcode 9, so it is compatible with macOS 10.6+. Obviously, that requires some workarounds and *hacks*. They will be listed in the end of the README.
 
 ## Extensions
-
-### NSArray
-
-```objectivec
--(NSArray*)sortedDictionariesArrayWithKey:(NSString *)key orderingByValuesOrder:(NSArray*)value;
-```
-
-Returns a sorted version of an array of dictionaries based in the value of a key. The values are ordered according to the provided array of ordered possible values.
-
-```objectivec
--(NSArray*)arrayByRemovingRepetitions;
-```
-
-Returns a copy of the existing array removing duplicates of the same element. Note: Doesn't preserve the order of the elements in the original array.
-
-```objectivec
--(NSArray*)arrayByRemovingObjectsFromArray:(NSArray*)otherArray;
-```
-
-Returns a copy of the existing array, but without the elements that are present in the other array.
 
 ### NSApplication
 
@@ -154,6 +18,92 @@ Returns a copy of the existing array, but without the elements that are present 
 ```
 
 Restarts the application.
+
+```objectivec
++(void)restartInLanguage:(nonnull NSString*)language;
+```
+
+Restarts the application in a different language (requires a valid locale identifier).
+
+```objectivec
++(nullable VMMAppearanceName)appearance;
+```
+
+Returns the current appearance of the system. Returns null if the system version is below 10.10, or if \[NSApp appearance\] returns null.
+
+```objectivec
++(BOOL)setAppearance:(nullable VMMAppearanceName)appearance;
+```
+
+Sets the current appearance of the system. Returns false if it fails, or if the system version is below 10.10. Returns true if the appearance is replaced properly.
+
+### NSArray
+
+```objectivec
+-(BOOL)contains:(nonnull id)anObject;
+```
+
+Same as `containsObject:`.
+
+```objectivec
+-(BOOL)containsAll:(nonnull NSArray*)array;
+```
+
+Returns true if contains all the elements of array.
+
+```objectivec
+-(nullable ObjectType)get:(NSUInteger)index;
+```
+
+Same as `objectAtIndex:`.
+
+```objectivec
+-(nonnull NSMutableArray*)map:(_Nullable id (^_Nonnull)(id _Nonnull object))newObjectForObject;
+```
+
+Works like Javascript's array `map` function, or Java's Stream `map` function.
+
+```objectivec
+-(nonnull NSMutableArray*)mapWithIndex:(_Nullable id (^_Nonnull)(id _Nonnull object, NSUInteger index))newObjectForObject;
+```
+
+Works like Javascript's array `map` function, or Java's Stream `map` function, with `index` has the second argument.
+
+```objectivec
+-(nonnull NSMutableArray*)filter:(BOOL (^_Nonnull)(id _Nonnull object))newObjectForObject;
+```
+
+Works like Javascript's array `filter` function, or Java's Stream `filter` function.
+
+```objectivec
+-(nonnull NSMutableArray*)filterWithIndex:(BOOL (^_Nonnull)(id _Nonnull object, NSUInteger index))newObjectForObject;
+```
+
+Works like Javascript's array `filter` function, or Java's Stream `filter` function, with `index` has the second argument.
+
+```objectivec
+-(nonnull instancetype)forEach:(void (^_Nonnull)(id _Nonnull object))newObjectForObject;
+```
+
+Works like Javascript's array `forEach` function, or Java's List `forEach` function.
+
+```objectivec
+-(NSIndexSet* _Nonnull)indexesOf:(ObjectType _Nonnull)object;
+```
+
+Indexes of object inside array.
+
+```objectivec
+-(NSIndexSet* _Nonnull)indexesOf:(ObjectType _Nonnull)object inRange:(NSRange)range;
+```
+
+Indexes of object inside array, inside a specific range.
+
+```objectivec
+-(NSInteger)lastIndexOf:(ObjectType _Nonnull)object inRange:(NSRange)range;
+```
+
+Last index of object inside array, inside a specific range.
 
 ### NSAttributedString
 
@@ -178,6 +128,12 @@ Returns an HTML page with the text and formatting of the `NSAttributedString` ob
 ### NSBundle
 
 ```objectivec
+-(nonnull NSUserDefaults*)userDefaults;
+```
+
+Returns the user defaults for the bundle.
+
+```objectivec
 -(nonnull NSString*)bundleName;
 ```
 
@@ -199,13 +155,13 @@ Checks if the app is being executed in App Translocation.
 -(BOOL)disableAppTranslocation;
 ```
 
-Disable App Translocation in the app at the bundle path.
+Disable App Translocation in the app at the bundle path. Is only useful if that bundle was returned by the method `realMainBundle`, or if you are trying to disable app translocation for another app.
 
 ```objectivec
-+(nullable NSBundle*)originalMainBundle;
++(nullable NSBundle*)realMainBundle;
 ```
 
-Returns the `NSBundle` of the original bundle, not App Translocated, in case the app is App Translocated. If the app isn't App Translocated, it returns the `mainBundle`.
+Returns the `NSBundle` of the original bundle, not App Translocated, in case the app is App Translocated. If the app isn't App Translocated, it returns the `mainBundle`. If your macOS version is 10.15 or superior, that method won't work if the app is translocated, raising an exception.
 
 ### NSColor
 
@@ -236,34 +192,16 @@ Returns a RGB hex string of the `NSColor` object. Example: The black color retur
 ### NSData
 
 ```objectivec
-+(NSData*)dataWithContentsOfURL:(NSURL *)url timeoutInterval:(long long int)timeoutInterval;
++(nullable NSData*)safeDataWithContentsOfFile:(nonnull NSString*)filePath;
 ```
 
-Loads the content of an URL using `NSURLConnection` ignoring local cache data. It only provides you the data if no error happened during the download, and if the status code was between 200 and 299. A timeout can also be specified.
+Init a `NSData` with the contents of the file at the specified path. Equivalent to `alloc` + `initWithContentsOfFile:options:error:`, but automatically raises an exception in case any error happens, making your code cleaner and not ignoring errors.
 
 ```objectivec
-+(NSData*)safeDataWithContentsOfFile:(NSString*)filePath;
+-(nonnull NSString*)base64EncodedString;
 ```
 
-Init a `NSData` with the contents of the file at the specified path. Equivalent to `alloc` + `initWithContentsOfFile:options:error:`, but automatically prompts an error in case any happens, making your code cleaner and not ignoring any possible error.
-
-```objectivec
-+(NSString*)jsonStringWithJsonObject:(id)object;
-```
-
-Returns the contents of a JSON file based in an object (which may be a NSString, a NSArray, a NSDictionary or a NSNumber).
-
-```objectivec
-+(NSData*)dataWithJsonObject:(id)object;
-```
-
-Returns a `NSData` with the contents of a JSON file based in an object (which may be a NSString, a NSArray, a NSDictionary or a NSNumber).
-
-```objectivec
--(id)jsonObject;
-```
-
-Returns an object based in the `NSData` object, which is the contents of a JSON file.
+Return the bytes of the data encoded as base64.
 
 ### NSDateFormatter
 
@@ -276,79 +214,79 @@ Returns a `NSDate` object with the date specified in the string, which has the s
 ### NSFileManager
 
 ```objectivec
--(BOOL)createSymbolicLinkAtPath:(NSString *)path withDestinationPath:(NSString *)destPath;
+-(BOOL)createSymbolicLinkAtPath:(nonnull NSString *)path withDestinationPath:(nonnull NSString *)destPath;
 ```
 
-Equivalent to `createSymbolicLinkAtPath:withDestinationPath:error:`, but automatically deals with any produced errors.
+Equivalent to `createSymbolicLinkAtPath:withDestinationPath:error:`, but automatically raises with any produced errors.
 
 ```objectivec
--(BOOL)createDirectoryAtPath:(NSString*)path withIntermediateDirectories:(BOOL)interDirs;
+-(BOOL)createDirectoryAtPath:(nonnull NSString*)path withIntermediateDirectories:(BOOL)interDirs;
 ```
 
-Equivalent to `createDirectoryAtPath:withIntermediateDirectories:attributes:error:`, but automatically deals with any produced errors and uses no attributes.
+Equivalent to `createDirectoryAtPath:withIntermediateDirectories:attributes:error:`, but automatically raises any produced errors and uses no attributes.
 
 ```objectivec
--(BOOL)createEmptyFileAtPath:(NSString*)path;
+-(BOOL)createEmptyFileAtPath:(nonnull NSString*)path;
 ```
 
 Equivalent to `createFileAtPath:contents:attributes:`, but with no contents and no attributes.
 
 ```objectivec
--(BOOL)moveItemAtPath:(NSString*)path toPath:(NSString*)destination;
+-(BOOL)moveItemAtPath:(nonnull NSString*)path toPath:(nonnull NSString*)destination;
 ```
 
-Equivalent to `moveItemAtPath:toPath:error:`, but automatically deals with any produced errors.
+Equivalent to `moveItemAtPath:toPath:error:`, but automatically raises any produced errors.
 
 ```objectivec
--(BOOL)copyItemAtPath:(NSString*)path toPath:(NSString*)destination;
+-(BOOL)copyItemAtPath:(nonnull NSString*)path toPath:(nonnull NSString*)destination;
 ```
 
-Equivalent to `copyItemAtPath:toPath:error:`, but automatically deals with any produced errors.
+Equivalent to `copyItemAtPath:toPath:error:`, but automatically raises any produced errors.
 
 ```objectivec
--(BOOL)removeItemAtPath:(NSString*)path;
+-(BOOL)removeItemAtPath:(nonnull NSString*)path;
 ```
 
-Equivalent to `removeItemAtPath:error:`, but automatically deals with any produced errors.
+Equivalent to `removeItemAtPath:error:`, but automatically raises any produced errors.
 
 ```objectivec
--(BOOL)directoryExistsAtPath:(NSString*)path;
+-(BOOL)directoryExistsAtPath:(nonnull NSString*)path;
 ```
 
 Equivalent to `fileExistsAtPath:isDirectory:`, but only returns true if the given path is a directory.
 
 ```objectivec
--(BOOL)regularFileExistsAtPath:(NSString*)path;
+-(BOOL)regularFileExistsAtPath:(nonnull NSString*)path;
 ```
 
 Equivalent to `fileExistsAtPath:isDirectory:`, but only returns true if the given path is not a directory.
 
 ```objectivec
--(NSArray*)contentsOfDirectoryAtPath:(NSString*)path;
+-(nullable NSArray<NSString*>*)contentsOfDirectoryAtPath:(nonnull NSString*)path;
 ```
 
-Equivalent to `contentsOfDirectoryAtPath:error:`, but automatically deals with any produced errors.
+Equivalent to `contentsOfDirectoryAtPath:error:`, but automatically raises any produced errors.
 
 ```objectivec
--(NSString*)destinationOfSymbolicLinkAtPath:(NSString *)path;
+-(nullable NSString*)destinationOfSymbolicLinkAtPath:(nonnull NSString *)path;
 ```
 
-Equivalent to `destinationOfSymbolicLinkAtPath:error:`, but automatically deals with any produced errors.
+Equivalent to `destinationOfSymbolicLinkAtPath:error:`, but automatically raises any produced errors.
 
 ```objectivec
--(unsigned long long int)sizeOfRegularFileAtPath:(NSString*)path
+-(unsigned long long int)sizeOfRegularFileAtPath:(nonnull NSString*)path;
 ```
 
 Returns the size of the file at the given path according to the value of `NSFileSize` in the dictionary returned by `attributesOfItemAtPath:error:`.
 
 ```objectivec
--(unsigned long long int)sizeOfDirectoryAtPath:(NSString*)path
+-(unsigned long long int)sizeOfDirectoryAtPath:(nonnull NSString*)path;
 ```
 
 Returns the size of a directory by summing the size of regular files in subpaths inside the directory. Takes a longer time to run, but is much more precise.
 
 ```objectivec
--(NSString*)checksum:(NSChecksumType)checksum ofFileAtPath:(NSString*)file
+-(nullable NSString*)checksum:(NSChecksumType)checksum ofFileAtPath:(nonnull NSString*)file;
 ```
 
 Returns the checksum of the specified file. There are 14 possible cryptographies for `checksum`, including sha1, sha256, md5, etc.
@@ -362,34 +300,28 @@ Returns the checksum of the specified file. There are 14 possible cryptographies
 Init a `NSImage` with the contents of the `NSData` object.
 
 ```objectivec
-+(NSImage*)quickLookImageWithMaximumSize:(int)size forFileAtPath:(NSString*)arquivo
++(NSImage*)quickLookImageFromFileAtPath:(NSString*)arquivo withMaximumSize:(int)size;
 ```
 
 Init a `NSImage` with the QuickLook image of the file at the specified path with the specified size (or smaller).
 
 ```objectivec
-+(NSImage*)imageFromFileAtPath:(NSString*)arquivo;
++(NSImage*)quickLookImageFromFileAtPath:(NSString*)arquivo;
 ```
 
 Init a `NSImage` with the contents of the image file at the specified path.
 
 ```objectivec
-+(NSImage*)transparentImageWithSize:(NSSize)size;
++(NSImage*)emptyImageWithSize:(NSSize)size;
 ```
 
 Init a `NSImage` of an empty image with the specified size.
 
 ```objectivec
--(BOOL)saveAsIcnsAtPath:(NSString*)icnsPath;
-```
-
-Write the existing `NSImage` at the specified path in the icns (macOS icon) format.
-
-```objectivec
 -(BOOL)writeToFile:(NSString*)file atomically:(BOOL)useAuxiliaryFile;
 ```
 
-Write the existing `NSImage` at the specified path in the format specified by the extension of the last component of the given path. Compatible extensions are **bmp**, **gif**, **jpg**, **jp2**, **png** and **tiff**.
+Write the existing `NSImage` at the specified path in the format specified by the extension of the last component of the given path. Compatible extensions are **icns**, **bmp**, **gif**, **jpg**, **jp2**, **png** and **tiff**.
 
 Changes the color of an existing `NSMenu` to the dark color of the Dock right-click menu.
 
@@ -400,6 +332,88 @@ Changes the color of an existing `NSMenu` to the dark color of the Dock right-cl
 ```
 
 Equivalent to `alloc` + `initWithTitle:action:keyEquivalent:` + `setTarget:`, with key equivalent equals to `@""`. Used to make the code cleaner.
+
+### NSMutableArray
+
+```objectivec
+-(void)add:(nonnull id)anObject;
+```
+
+Same as `addObject:`.
+
+```objectivec
+-(void)add:(nonnull id)anObject atIndex:(NSUInteger)index;
+```
+
+Same as `insertObject:atIndex:`.
+
+```objectivec
+-(void)addAll:(nonnull NSArray *)otherArray;
+```
+
+Same as `addObjectsFromArray:`.
+
+```objectivec
+-(void)clear;
+```
+
+Same as `removeAllObjects`.
+
+```objectivec
+-(nonnull NSMutableArray*)map:(_Nullable id (^_Nonnull)(id _Nonnull object))newObjectForObject;
+```
+
+Works like Javascript's array `map` function, or Java's Stream `map` function.
+
+```objectivec
+-(nonnull NSMutableArray*)mapWithIndex:(_Nullable id (^_Nonnull)(id _Nonnull object, NSUInteger index))newObjectForObject;
+```
+
+Works like Javascript's array `map` function, or Java's Stream `map` function, with `index` has the second argument.
+
+```objectivec
+-(nonnull NSMutableArray*)filter:(BOOL (^_Nonnull)(id _Nonnull object))newObjectForObject;
+```
+
+Works like Javascript's array `filter` function, or Java's Stream `filter` function.
+
+```objectivec
+-(nonnull NSMutableArray*)filterWithIndex:(BOOL (^_Nonnull)(id _Nonnull object, NSUInteger index))newObjectForObject;
+```
+
+Works like Javascript's array `filter` function, or Java's Stream `filter` function, with `index` has the second argument.
+
+```objectivec
+-(void)removeAll:(nonnull NSArray*)array;
+```
+
+Same as `removeObjectsInArray:`.
+
+```objectivec
+-(void)sortBySelector:(SEL _Nonnull)selector usingComparator:(NSInteger (^_Nonnull)(id _Nonnull object1, id _Nonnull object2))comparator;
+```
+
+Sort array using comparator by selector.
+
+### NSMutableString
+
+```objectivec
+-(void)replace:(nonnull NSString *)target with:(nonnull NSString *)replacement;
+```
+
+Replace occurences of string with another string.
+
+```objectivec
+-(void)replaceRegex:(nonnull NSString *)target with:(nonnull NSString *)replacement;
+```
+
+Replace occurences of regex with string.
+
+```objectivec
+-(nonnull NSMutableString*)trim;
+```
+
+Trims the mutable string.
 
 
 ## New Classes (misc)
@@ -589,6 +603,26 @@ List of the computer video cards. Possibly requires non-sandboxed application.
 
 Most powerful video card of the computer. Possibly requires non-sandboxed application.
 
+### VMMJSON
+
+```objectivec
++(nullable NSString*)serializeToString:(nonnull id)object;
+```
+
+Returns the contents of a JSON file based in an object (which may be a NSString, a NSArray, a NSDictionary or a NSNumber).
+
+```objectivec
++(nullable NSData*)serializeToData:(nonnull id)object;
+```
+
+Returns a `NSData` with the contents of a JSON file based in an object (which may be a NSString, a NSArray, a NSDictionary or a NSNumber).
+
+```objectivec
++(nullable id)deserializeFromData:(nonnull NSData*)data;
+```
+
+Returns an object based in the `NSData` object, which is the contents of a JSON file.
+
 ### VMMVideoCard
 Model that stores information about a specific video card.
 
@@ -774,33 +808,6 @@ Protocol for `VMMUserNotificationCenter`  delegate.
 
 If `NSUserNotificationCenter` or `NSAlert` is used, that function is called when the action button is pressed, and the user information is provided.
 
-
-### VMMMenu
-Based in `NSMenu+Dark` (https://github.com/swillits/NSMenu-Dark). 
-
-```objectivec
-+ (void)forceLightMenu;
-```
-
-Gives every VMMMenu (which is basically a  `NSMenu`) the light color of the Aqua appearance, even during Mojave's dark mode.
-
-```objectivec
-+ (void)forceDarkMenu;
-```
-
-Gives every VMMMenu (which is basically a  `NSMenu`) the dark color of the Dock right-click menu, even in macOS 10.6.
-
-```objectivec
-+ (void)forceSystemMenu;
-```
-
-Gives every VMMMenu (which is basically a  `NSMenu`) the regular system color.
-
-### NKFTPManager
-
-Replica of `FTPManager` by `nkreipke` with minor modifications. The original project can be found here:
-https://github.com/nkreipke/FTPManager
-
 ### VMMLogUtility
 
 ```objectivec
@@ -822,29 +829,13 @@ measureTime(__message){}
 Based in `LOOProfiling.h`'s `LOO_MEASURE_TIME` (https://gist.github.com/sfider/3072143). Measure the time that its block takes to run and print it using `NSDebugLog`.
 
 ## Workarounds and Hacks
-Colors indecate the level of the hack: Green (![#00ff00](https://placehold.it/15/00ff00/000000?text=+)) means it can't be noticed; Blue (![#0000ff](https://placehold.it/15/0000ff/000000?text=+)) means it can only be noticed under certain circunstances, but it does not affect the UX; Yellow (![#ffff00](https://placehold.it/15/ffff00/000000?text=+)) means it can be noticed, and affect the UX, but just a little bit; Red (![#f03c15](https://placehold.it/15/f03c15/000000?text=+)) means it can be noticed AND may affect the UX harshly.
 
-### - ![#00ff00](https://placehold.it/15/00ff00/000000?text=+) [NSData jsonStringWithJsonObject:object] (macOS = 10.6)
-The JSON string is created manually since `NSJSONSerialization` was not available before macOS 10.7.
-
-### - ![#00ff00](https://placehold.it/15/00ff00/000000?text=+) [NSData dataWithJsonObject:object] (macOS = 10.6)
-The JSON data is created based in the function above, since `NSJSONSerialization` was not available before macOS 10.7.
-
-### - ![#00ff00](https://placehold.it/15/00ff00/000000?text=+) [(NSData*)object jsonObject] (macOS = 10.6)
-The JSON object is created using `SZJsonParser` since `NSJSONSerialization` was not available before macOS 10.7. Some changes were make in `SZJsonParser` to support the existence of base64 strings inside the JSON.
-
-### - ![#0000ff](https://placehold.it/15/0000ff/000000?text=+) [(NSImage*)img saveAsIcnsAtPath:path] (macOS = 10.6)
-In macOS 10.7+ systems, icns files are created with `iconutil`, using `tiff2icns` only if the first one does not return a valid image. macOS 10.6 systems create using `tiff2icns` only, since `iconutil` was introduced in macOS 10.7. The only consequence of that is that the icons created in macOS 10.6 are going to have only one size, which makes them look a bit bugged if you move them to a macOS 10.12+ computer and show them in Finder with the list view mode.
-
-### - ![#ffff00](https://placehold.it/15/ffff00/000000?text=+) [(NSOpenPanel*)panel setWindowTitle:title] (macOS >= 10.11 )
+### - [(NSOpenPanel*)panel setWindowTitle:title] (macOS >= 10.11)
 From macOS 10.11 and on, the `setTitle:` function does nothing to `NSOpenPanel`'s. Considering that, this function uses `setMessage:` for macOS 10.11+ and `setTitle:` for macOS 10.10-.
 
-### - ![#00ff00](https://placehold.it/15/00ff00/000000?text=+) ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) [(VMMUserNotificationCenter*)notificationCenter deliverNotificationWithTitle:title message:message userInfo:info icon:icon actionButtonText:actionButton] (macOS <= 10.7)
+### - [(VMMUserNotificationCenter*)notificationCenter deliverNotificationWithTitle:title message:message userInfo:info icon:icon actionButtonText:actionButton] (macOS <= 10.7)
 Since `NSUserNotification` was only introduced in macOS 10.8, macOS 10.7 and below require a different approach. In those systems, `VMMUserNotificationCenter` uses Growl instead, if it can found. If it don't, it shows a simple `NSAlert` instead of a notification. So you still have notifications in macOS 10.6 and 10.7, but only if you have Growl. Considering that, that function has two ratings.
 
-### - ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) [(NSString*)string componentsMatchingWithRegex:regex] (macOS = 10.6)
+### - [(NSString*)string componentsMatchingWithRegex:regex] (macOS = 10.6)
 This is the dirtiest hack of them all. Since `NSRegularExpression` was introduced in macOS 10.7, the only method that I found to do that (since the `RegexKit` framework do not compile anymore) is using Python. In macOS 10.6 only, that function will create a temporary file with `string` and a temporary python script which should parse `string` and return the components matching with `regex`. It's very slow in comparison to `NSRegularExpression`, and should not be used multiple times in sequence (however, it can be used simultaneously in the latest versions), but at least it works using the same kind of regex of `NSRegularExpression` ... please, forgive me.
-
-I tried using RegexKitLite as well (https://github.com/inquisitiveSoft/RegexKitLite), however it has some weird bugs when you use it multiple times, even after cleaning its cache.
-
 

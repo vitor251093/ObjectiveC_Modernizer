@@ -8,11 +8,16 @@
 
 #import "NSException+Extension.h"
 
-NSException* exception(NSString* name, NSString* reason)
+NSException* _Nonnull exception(NSString* _Nonnull name, NSString* _Nonnull reason)
 {
     return [NSException exceptionWithName:name reason:reason userInfo:nil];
 }
 
 @implementation NSException (VMMException)
+
++(nonnull NSException*)exceptionWithError:(nonnull NSError*)error
+{
+    return [NSException exceptionWithName:NSGenericException reason:error.localizedDescription userInfo:error.userInfo];
+}
 
 @end

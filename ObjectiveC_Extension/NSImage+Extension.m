@@ -23,33 +23,14 @@
 
 #define TIFF2ICNS_ICON_SIZE 512
 
-@implementation NSBitmapImageRep (VMMBitmapImageRep)
--(BOOL)isTransparentAtX:(int)x andY:(int)y
-{
-    CGFloat alpha = [[self colorAtX:x y:y] alphaComponent];
-    return (alpha < 1.0/255);
-}
-@end
-
 @implementation NSImage (VMMImage)
 
 +(NSImage*)imageWithData:(NSData*)data
 {
-    NSImage* image;
-    
-    @try
-    {
-        image = [[NSImage alloc] initWithData:data];
-    }
-    @catch (NSException* exception)
-    {
-        return nil;
-    }
-    
-    return image;
+    return [[NSImage alloc] initWithData:data];
 }
 
-+(NSImage*)quickLookImageWithMaximumSize:(int)size forFileAtPath:(NSString*)arquivo
++(NSImage*)quickLookImageFromFileAtPath:(NSString*)arquivo withMaximumSize:(int)size
 {
     NSImage* img;
     
@@ -70,7 +51,7 @@
     
     return img;
 }
-+(NSImage*)imageFromFileAtPath:(NSString*)arquivo
++(NSImage*)quickLookImageFromFileAtPath:(NSString*)arquivo
 {
     NSImage *img;
     
@@ -85,7 +66,7 @@
         {
             // 100000 is an arbitrary number, choosen for been a size bigger enought to
             // take the maximum quality of every possible image or icon.
-            img = [self quickLookImageWithMaximumSize:100000 forFileAtPath:arquivo];
+            img = [self quickLookImageFromFileAtPath:arquivo withMaximumSize:100000];
         }
         
         if (img == nil)
@@ -97,7 +78,7 @@
     return img;
 }
 
-+(NSImage*)transparentImageWithSize:(NSSize)size
++(NSImage*)emptyImageWithSize:(NSSize)size
 {
     NSImage* clearImage = [[NSImage alloc] initWithSize:size];
     [clearImage lockFocus];
@@ -108,27 +89,9 @@
     return clearImage;
 }
 
--(BOOL)isTransparent
-{
-    @autoreleasepool
-    {
-        NSData *tempData = [[NSData alloc] initWithData:[self TIFFRepresentation]];
-        NSBitmapImageRep *repIcon = [[NSBitmapImageRep alloc] initWithData:tempData];
-        int x, y;
-        
-        for (y=0; y<self.size.height; y++)
-        {
-            for (x=0; x<self.size.width; x++)
-            {
-                if ([repIcon isTransparentAtX:x andY:y] == false)
-                {
-                    return false;
-                }
-            }
-        }
-    }
-    
-    return true;
+-(NSData*)dataUsingType:(NSBitmapImageFileType)type {
+    NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[self TIFFRepresentation]];
+    return [imageRep representationUsingType:type properties:@{}];
 }
 
 -(BOOL)saveAsPngImageWithSize:(int)size atPath:(NSString*)pngPath
@@ -222,16 +185,16 @@
     return result;
 }
 
--(NSData*)dataForImageWithType:(NSBitmapImageFileType)type {
-    NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:[self TIFFRepresentation]];
-    return [imageRep representationUsingType:type properties:@{}];
-}
-
 -(BOOL)writeToFile:(NSString*)file atomically:(BOOL)useAuxiliaryFile
 {
     @autoreleasepool
     {
         NSString* extension = file.pathExtension.lowercaseString;
+        if ([extension isEqualToString:@"icns"])
+        {
+            return [self saveAsIcnsAtPath:file];
+        }
+        
         NSDictionary* typeForExtension = @{@"bmp" : @(IS_SYSTEM_MAC_OS_10_12_OR_SUPERIOR ? NSBitmapImageFileTypeBMP      : NSBMPFileType     ),
                                            @"gif" : @(IS_SYSTEM_MAC_OS_10_12_OR_SUPERIOR ? NSBitmapImageFileTypeGIF      : NSGIFFileType     ),
                                            @"jpg" : @(IS_SYSTEM_MAC_OS_10_12_OR_SUPERIOR ? NSBitmapImageFileTypeJPEG     : NSJPEGFileType    ),
@@ -243,10 +206,9 @@
         {
             @throw exception(NSInvalidArgumentException,
                              [NSString stringWithFormat:@"Invalid extension for saving image file: %@",extension]);
-            return false;
         }
         
-        NSData* data = [self dataForImageWithType:(NSBitmapImageFileType)[typeForExtension[extension] unsignedLongValue]];
+        NSData* data = [self dataUsingType:(NSBitmapImageFileType)[typeForExtension[extension] unsignedLongValue]];
         if (data == nil) return false;
         
         return [data writeToFile:file atomically:useAuxiliaryFile];

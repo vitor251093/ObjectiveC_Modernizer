@@ -7,7 +7,9 @@
 //
 
 #import <XCTest/XCTest.h>
+#import <JavaScriptCore/JavaScriptCore.h>
 #import "NSString+Extension.h"
+#import "NSData+Extension.h"
 
 @interface NSStringTests : XCTestCase
 
@@ -22,30 +24,20 @@
     XCTAssert(![@"12345678" contains:@"321"]);
 }
 
-- (void)testStringWithHexString
-{
-    XCTAssert([[NSString stringWithHexadecimalUTF8String:@"42"] isEqualToString:@"B"]);
-}
-
-- (void)testStringByRemovingEvenCharsFromString
-{
-    XCTAssert([[NSString stringByRemovingEvenCharsFromString:@"12345678"] isEqualToString:@"1357"]);
-}
-
 - (void)testStringWebStructure
 {
-    XCTAssert([[@"?" stringToWebStructure] isEqualToString:@"%3F"]);
-    XCTAssert([[@"<" stringToWebStructure] isEqualToString:@"%3C"]);
-    XCTAssert([[@"&" stringToWebStructure] isEqualToString:@"%26"]);
-    XCTAssert([[@"%" stringToWebStructure] isEqualToString:@"%25"]);
-    XCTAssert([[@" " stringToWebStructure] isEqualToString:@"%20"]);
+    XCTAssert([[@"?" encodeURIComponent] isEqualToString:@"%3F"]);
+    XCTAssert([[@"<" encodeURIComponent] isEqualToString:@"%3C"]);
+    XCTAssert([[@"&" encodeURIComponent] isEqualToString:@"%26"]);
+    XCTAssert([[@"%" encodeURIComponent] isEqualToString:@"%25"]);
+    XCTAssert([[@" " encodeURIComponent] isEqualToString:@"%20"]);
     
-    XCTAssert([[@"\n" stringToWebStructure] isEqualToString:@"%0A"]);
-    XCTAssert([[@"\t" stringToWebStructure] isEqualToString:@"%09"]);
+    XCTAssert([[@"\n" encodeURIComponent] isEqualToString:@"%0A"]);
+    XCTAssert([[@"\t" encodeURIComponent] isEqualToString:@"%09"]);
     
-    XCTAssert([[@"B" stringToWebStructure] isEqualToString:@"B"]);
-    XCTAssert([[@"+" stringToWebStructure] isEqualToString:@"%2B"]);
-    XCTAssert([[@"=" stringToWebStructure] isEqualToString:@"%3D"]);
+    XCTAssert([[@"B" encodeURIComponent] isEqualToString:@"B"]);
+    XCTAssert([[@"+" encodeURIComponent] isEqualToString:@"%2B"]);
+    XCTAssert([[@"=" encodeURIComponent] isEqualToString:@"%3D"]);
 }
 
 - (void)testStringRangeAfterAndBefore
@@ -117,17 +109,6 @@
     XCTAssert([@"0123456789012345" rangeAfterString:nil andBeforeString:nil].length == 16);
 }
 
-- (void)testInitialIntValue
-{
-    XCTAssert([@"10421ab" initialIntegerValue].intValue == 10421);
-    XCTAssert([@"10421a"  initialIntegerValue].intValue == 10421);
-    XCTAssert([@"10421&"  initialIntegerValue].intValue == 10421);
-    XCTAssert([@"10421."  initialIntegerValue].intValue == 10421);
-    XCTAssert([@"10421%"  initialIntegerValue].intValue == 10421);
-    XCTAssert([@"10421"   initialIntegerValue].intValue == 10421);
-    XCTAssert([@"abc"     initialIntegerValue] == nil           );
-}
-
 - (void)testGetFragment
 {
     // With Before and End in the String; With Before and End arguments
@@ -190,16 +171,16 @@
     NSArray* result;
     
     result = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"0"];
-    XCTAssert([[@"1234567890" componentsMatchingWithRegex:@"[0-9]"] isEqualToArray:result]);
+    XCTAssert([[@"1234567890" findAll:@"[0-9]"] isEqualToArray:result]);
     
     result = @[@"1234567890"];
-    XCTAssert([[@"1234567890" componentsMatchingWithRegex:@"[0-9]{10}"] isEqualToArray:result]);
+    XCTAssert([[@"1234567890" findAll:@"[0-9]{10}"] isEqualToArray:result]);
     
     result = @[@"123a",@"456b",@"789c"];
-    XCTAssert([[@"123a456b789c" componentsMatchingWithRegex:@"[0-9]{3}[a-z]"] isEqualToArray:result]);
+    XCTAssert([[@"123a456b789c" findAll:@"[0-9]{3}[a-z]"] isEqualToArray:result]);
     
     result = @[@"1234567890"];
-    XCTAssert([[@"1234567890" componentsMatchingWithRegex:@"[0-9]+"] isEqualToArray:result]);
+    XCTAssert([[@"1234567890" findAll:@"[0-9]+"] isEqualToArray:result]);
 }
 
 @end

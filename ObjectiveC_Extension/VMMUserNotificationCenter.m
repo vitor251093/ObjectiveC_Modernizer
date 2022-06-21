@@ -100,7 +100,7 @@ static VMMUserNotificationCenter *_sharedInstance;
             iconFileUrl = [NSURL fileURLWithPath:iconFilePath];
         }
         
-        NSString* appName = [[NSBundle originalMainBundle] bundleName];
+        NSString* appName = [[NSBundle realMainBundle] bundleName];
         NSArray* growlScript = @[                           @"tell application id \"com.Growl.GrowlHelperApp\"",
                                                             @"\tset the allNotificationsList to {\"Notification\"}",
                                                             @"\tset the enabledNotificationsList to {\"Notification\"}",

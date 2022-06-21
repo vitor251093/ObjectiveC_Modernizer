@@ -25,7 +25,7 @@
     return self;
 }
 
--(void)replaceOccurrencesOfString:(NSString*)oldString withString:(NSString*)newString
+-(void)replace:(NSString*)oldString with:(NSString*)newString
 {
     NSRange downloadRange = [self.string rangeOfString:oldString];
     while (downloadRange.location != NSNotFound && downloadRange.length != 0)

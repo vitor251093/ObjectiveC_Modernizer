@@ -11,6 +11,7 @@
 #import "SZJsonParser.h"
 
 #import "VMMAlert.h"
+#import "NSException+Extension.h"
 #import "NSMutableString+Extension.h"
 
 #import "VMMComputerInformation.h"
@@ -18,28 +19,8 @@
 
 @implementation NSData (VMMData)
 
-+(void)dataWithContentsOfURL:(nonnull NSURL *)url timeoutInterval:(long long int)timeoutInterval withCompletionHandler:(void (^_Nullable)(NSUInteger statusCode, NSData* _Nullable data, NSError* _Nullable error))completion
-{
-    NSData* stringData;
-    
-    @autoreleasepool
-    {
-        NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
-                                             timeoutInterval:timeoutInterval];
-        
-        NSError *error = nil;
-        NSHTTPURLResponse *response = nil;
-        stringData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-        
-        if (completion != nil) {
-            completion(response.statusCode, stringData, error);
-        }
-    }
-}
 +(nullable NSData*)safeDataWithContentsOfFile:(nonnull NSString*)filePath
 {
-    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) return nil;
-    
     NSData* data;
     
     @autoreleasepool
@@ -49,98 +30,11 @@
         
         if (error != nil)
         {
-            [VMMAlert showAlertOfType:VMMAlertTypeError withMessage:[NSString stringWithFormat:VMMLocalizedString(@"Error while loading file data: %@"), error.localizedDescription]];
+            @throw [NSException exceptionWithError:error];
         }
     }
     
     return data;
-}
-
-+(nullable NSString*)jsonStringWithObject:(nonnull id)object
-{
-    if (IsClassNSJSONSerializationAvailable == false)
-    {
-        @autoreleasepool
-        {
-            if ([object isKindOfClass:[NSString class]])
-            {
-                NSMutableString* stringObject = [(NSString*)object mutableCopy];
-                [stringObject replaceOccurrencesOfString:@"\"" withString:@"\\\""];
-                [stringObject replaceOccurrencesOfString:@"\n" withString:@"\\\n"];
-                [stringObject replaceOccurrencesOfString:@"/"  withString:@"\\/" ];
-                return [NSString stringWithFormat:@"\"%@\"",stringObject];
-            }
-            
-            if ([object isKindOfClass:[NSArray class]])
-            {
-                NSMutableArray* array = [[NSMutableArray alloc] init];
-                for (id innerObject in (NSArray*)object)
-                {
-                    [array addObject:[self jsonStringWithObject:innerObject]];
-                }
-                return [NSString stringWithFormat:@"[%@]",[array componentsJoinedByString:@","]];
-            }
-            
-            if ([object isKindOfClass:[NSDictionary class]])
-            {
-                NSMutableArray* dict = [[NSMutableArray alloc] init];
-                for (NSString* key in [(NSDictionary*)object allKeys])
-                {
-                    [dict addObject:[NSString stringWithFormat:@"%@:%@",[self jsonStringWithObject:key],
-                                     [self jsonStringWithObject:[(NSDictionary*)object objectForKey:key]]]];
-                }
-                return [NSString stringWithFormat:@"{%@}",[dict componentsJoinedByString:@","]];
-            }
-            
-            if ([object isKindOfClass:[NSNumber class]])
-            {
-                NSInteger integerValue = [(NSNumber*)object integerValue];
-                double doubleValue = [(NSNumber*)object doubleValue];
-                BOOL boolValue = [(NSNumber*)object boolValue];
-                
-                if (integerValue != doubleValue) return [NSString stringWithFormat:@"%lf",doubleValue];
-                if (integerValue != boolValue)   return [NSString stringWithFormat:@"%ld",integerValue];
-                return boolValue ? @"true" : @"false";
-            }
-            
-            return @"";
-        }
-    }
-
-    return [[NSString alloc] initWithData:[self jsonDataWithObject:object] encoding:NSUTF8StringEncoding];
-}
-
-+(nullable NSData*)jsonDataWithObject:(nonnull id)object
-{
-    if (IsClassNSJSONSerializationAvailable == false)
-    {
-        @autoreleasepool
-        {
-            return [[self jsonStringWithObject:object] dataUsingEncoding:NSUTF8StringEncoding];
-        }
-    }
-    
-    return [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil];
-}
-
--(nullable id)objectWithJsonData
-{
-    if (IsClassNSJSONSerializationAvailable == false)
-    {
-        @autoreleasepool
-        {
-            @try
-            {
-                return [[[NSString alloc] initWithData:self encoding:NSUTF8StringEncoding] jsonObject];
-            }
-            @catch (NSException* exception)
-            {
-                return nil;
-            }
-        }
-    }
-
-    return [NSJSONSerialization JSONObjectWithData:self options:0 error:nil];
 }
 
 -(nonnull NSString*)base64EncodedString

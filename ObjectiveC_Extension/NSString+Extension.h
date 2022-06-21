@@ -13,37 +13,29 @@
 
 @interface NSString (VMMString)
 
+-(unichar)charAt:(NSUInteger)index;
+-(BOOL)contains:(nonnull NSString*)string;
+-(NSUInteger)indexOf:(nonnull NSString*)string;
+-(NSUInteger)indexOf:(nonnull NSString*)string fromIndex:(NSUInteger)index;
+-(BOOL)isBlank;
+-(BOOL)isEmpty;
+-(NSUInteger)lastIndexOf:(nonnull NSString*)string;
+-(BOOL)matches:(nonnull NSString*)regexString;
+-(nonnull NSArray<NSString*>*)split:(nonnull NSString*)separator;
+
 +(nonnull  NSString*)stringWithCFTypeIDDescription:(CFTypeRef _Nonnull)cf_type;
 +(nullable NSString*)stringWithCFString:(CFStringRef _Nonnull)cf_string;
 +(nonnull  NSString*)stringWithCFNumber:(CFNumberRef _Nonnull)cf_number ofType:(CFNumberType)number_type;
 +(nullable NSString*)stringWithCFType:(CFTypeRef _Nonnull)cf_type;
 
--(NSRange)rangeOfUnescapedChar:(char)character;
--(NSRange)rangeOfUnescapedChar:(char)character range:(NSRange)rangeOfReceiverToSearch;
+-(nonnull NSArray<NSString*>*)findAll:(nonnull NSString*)regexString;
 
--(BOOL)contains:(nonnull NSString*)string;
--(BOOL)matchesWithSearchTerms:(nonnull NSArray*)searchTerms;
--(nonnull NSArray<NSString*>*)searchTermsWithString;
-
--(BOOL)matchesWithRegex:(nonnull NSString*)regexString;
--(nonnull NSArray<NSString*>*)componentsMatchingWithRegex:(nonnull NSString*)regexString;
-
-+(nonnull NSString*)humanReadableSizeForBytes:(long long int)bytes withDecimalMeasureSystem:(BOOL)measure;
-
--(nonnull NSString*)hexadecimalUTF8String;
-+(nullable NSString*)stringWithHexadecimalUTF8String:(nonnull NSString*)string;
-
-+(nonnull NSString*)stringByRemovingEvenCharsFromString:(nonnull NSString*)text;
--(nonnull NSString*)stringToWebStructure;
+-(nonnull NSString*)encodeURIComponent;
 
 -(NSRange)rangeAfterString:(nullable NSString*)before andBeforeString:(nullable NSString*)after;
 -(nullable NSString*)getFragmentAfter:(nullable NSString*)before andBefore:(nullable NSString*)after;
 
--(nullable NSNumber*)initialIntegerValue;
-
-+(nullable NSString*)stringWithContentsOfFile:(nonnull NSString*)file;
 +(nullable NSString*)stringWithContentsOfFile:(nonnull NSString*)file encoding:(NSStringEncoding)enc;
-+(void)stringWithContentsOfURL:(nonnull NSURL *)url encoding:(NSStringEncoding)enc timeoutInterval:(long long int)timeoutInterval withCompletionHandler:(void (^_Nullable)(NSUInteger statusCode, NSString* _Nullable string, NSError* _Nullable error))completion;
 
 -(BOOL)writeToFile:(nonnull NSString*)path atomically:(BOOL)useAuxiliaryFile encoding:(NSStringEncoding)enc;
 
@@ -51,8 +43,8 @@
 
 -(BOOL)isAValidURL;
 
--(NSString*)stringByReplacingCharactersInSet:(NSCharacterSet *)characterset withString:(NSString *)string;
--(NSString*)stringByRemovingCharactersInSet:(NSCharacterSet *)characterset;
+-(nonnull NSString*)stringByReplacingCharactersInSet:(nonnull NSCharacterSet *)characterset withString:(nonnull NSString *)string;
+-(nonnull NSString*)stringByRemovingCharactersInSet:(nonnull NSCharacterSet *)characterset;
 
 @end
 

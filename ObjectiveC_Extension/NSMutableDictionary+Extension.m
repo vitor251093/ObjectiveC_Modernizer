@@ -12,18 +12,7 @@
 
 +(nullable instancetype)mutableDictionaryWithContentsOfFile:(nonnull NSString*)filePath
 {
-    NSMutableDictionary *dictionary;
-    
-    @try
-    {
-        dictionary = [[NSMutableDictionary alloc] initWithContentsOfFile:filePath];
-    }
-    @catch (NSException *exception)
-    {
-        return nil;
-    }
-    
-    return dictionary;
+    return [[NSMutableDictionary alloc] initWithContentsOfFile:filePath];
 }
 
 @end

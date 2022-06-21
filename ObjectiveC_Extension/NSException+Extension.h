@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-NSException* exception(NSString* name, NSString* reason);
+NSException* _Nonnull exception(NSString* _Nonnull name, NSString* _Nonnull reason);
 
 @interface NSException (VMMException)
+
++(nonnull NSException*)exceptionWithError:(nonnull NSError*)error;
 
 @end

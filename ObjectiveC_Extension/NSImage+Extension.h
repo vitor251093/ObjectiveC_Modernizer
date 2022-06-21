@@ -11,27 +11,17 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface NSBitmapImageRep (VMMBitmapImageRep)
-
--(BOOL)isTransparentAtX:(int)x andY:(int)y;
-
-@end
-
-
 @interface NSImage (VMMImage)
 
 +(NSImage*)imageWithData:(NSData*)data;
 
-+(NSImage*)quickLookImageWithMaximumSize:(int)size forFileAtPath:(NSString*)arquivo;
-+(NSImage*)imageFromFileAtPath:(NSString*)arquivo;
++(NSImage*)quickLookImageFromFileAtPath:(NSString*)arquivo withMaximumSize:(int)size;
++(NSImage*)quickLookImageFromFileAtPath:(NSString*)arquivo;
 
-+(NSImage*)transparentImageWithSize:(NSSize)size;
++(NSImage*)emptyImageWithSize:(NSSize)size;
 
--(BOOL)isTransparent;
+-(NSData*)dataUsingType:(NSBitmapImageFileType)type;
 
--(BOOL)saveAsIcnsAtPath:(NSString*)icnsPath;
-
--(NSData*)dataForImageWithType:(NSBitmapImageFileType)type;
 -(BOOL)writeToFile:(NSString*)file atomically:(BOOL)useAuxiliaryFile;
 
 @end

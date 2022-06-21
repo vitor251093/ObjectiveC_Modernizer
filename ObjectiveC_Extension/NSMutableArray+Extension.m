@@ -8,25 +8,25 @@
 
 #import "NSMutableArray+Extension.h"
 
+#import "NSException+Extension.h"
+
 @implementation NSMutableArray (VMMMutableArray)
 
--(nonnull NSMutableArray*)map:(_Nullable id (^_Nonnull)(id _Nonnull object))newObjectForObject
+-(void)add:(nonnull id)anObject
 {
-    for (NSUInteger index = 0; index < self.count; index++)
-    {
-        id newObject = newObjectForObject([self objectAtIndex:index]);
-        [self replaceObjectAtIndex:index withObject:newObject ? newObject : [NSNull null]];
-    }
-    return self;
+    [self addObject:anObject];
 }
--(nonnull NSMutableArray*)mapWithIndex:(_Nullable id (^_Nonnull)(id _Nonnull object, NSUInteger index))newObjectForObject
+-(void)add:(nonnull id)anObject atIndex:(NSUInteger)index
 {
-    for (NSUInteger index = 0; index < self.count; index++)
-    {
-        id newObject = newObjectForObject([self objectAtIndex:index], index);
-        [self replaceObjectAtIndex:index withObject:newObject ? newObject : [NSNull null]];
-    }
-    return self;
+    [self insertObject:anObject atIndex:index];
+}
+-(void)addAll:(nonnull NSArray *)otherArray
+{
+    [self addObjectsFromArray:otherArray];
+}
+-(void)clear
+{
+    [self removeAllObjects];
 }
 -(nonnull NSMutableArray*)filter:(BOOL (^_Nonnull)(id _Nonnull object))newObjectForObject
 {
@@ -56,62 +56,56 @@
     }
     return self;
 }
-
--(void)sortAlphabeticallyByKey:(nonnull NSString*)key ascending:(BOOL)ascending
+-(nonnull NSMutableArray*)map:(_Nullable id (^_Nonnull)(id _Nonnull object))newObjectForObject
 {
-    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:key ascending:ascending selector:@selector(caseInsensitiveCompare:)];
-    [self sortUsingDescriptors:@[sort]];
-}
--(void)sortAlphabeticallyAscending:(BOOL)ascending
-{
-    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:nil ascending:ascending selector:@selector(caseInsensitiveCompare:)];
-    [self sortUsingDescriptors:@[sort]];
-}
--(void)sortDictionariesWithKey:(nonnull NSString *)key orderingByValuesOrder:(nonnull NSArray*)value
-{
-    [self sortUsingComparator:^NSComparisonResult(NSDictionary* obj1, NSDictionary* obj2)
+    for (NSUInteger index = 0; index < self.count; index++)
     {
-        NSUInteger obj1ValueIndex = obj1[key] != nil ? [value indexOfObject:obj1[key]] : -1;
-        NSUInteger obj2ValueIndex = obj2[key] != nil ? [value indexOfObject:obj2[key]] : -1;
-         
-        if (obj1ValueIndex == -1 && obj2ValueIndex != -1) return NSOrderedDescending;
-        if (obj1ValueIndex != -1 && obj2ValueIndex == -1) return NSOrderedAscending;
-        if (obj1ValueIndex == -1 && obj2ValueIndex == -1) return NSOrderedSame;
-         
-        if (obj1ValueIndex > obj2ValueIndex) return NSOrderedDescending;
-        if (obj1ValueIndex < obj2ValueIndex) return NSOrderedAscending;
-        return NSOrderedSame;
-    }];
+        id newObject = newObjectForObject([self objectAtIndex:index]);
+        [self replaceObjectAtIndex:index withObject:newObject ? newObject : [NSNull null]];
+    }
+    return self;
+}
+-(nonnull NSMutableArray*)mapWithIndex:(_Nullable id (^_Nonnull)(id _Nonnull object, NSUInteger index))newObjectForObject
+{
+    for (NSUInteger index = 0; index < self.count; index++)
+    {
+        id newObject = newObjectForObject([self objectAtIndex:index], index);
+        [self replaceObjectAtIndex:index withObject:newObject ? newObject : [NSNull null]];
+    }
+    return self;
+}
+-(void)removeAll:(nonnull NSArray*)array
+{
+    [self removeObjectsInArray:array];
 }
 
--(void)sortBySelector:(SEL _Nonnull)selector inOrder:(NSArray* _Nonnull)order
+-(void)sortBySelector:(SEL _Nonnull)selector usingComparator:(NSInteger (^_Nonnull)(id _Nonnull object1, id _Nonnull object2))comparator
 {
     [self sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2)
     {
-         NSUInteger obj1ValueIndex = -1;
-         NSUInteger obj2ValueIndex = -1;
+         id obj1ReturnedValue = nil;
+         id obj2ReturnedValue = nil;
          
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-         if ([obj1 respondsToSelector:selector])
+         if (![obj1 respondsToSelector:selector])
          {
-             id obj1ReturnedValue = [obj1 performSelector:selector];
-             if (obj1ReturnedValue != nil) obj1ValueIndex = [order indexOfObject:obj1ReturnedValue];
+             @throw exception(NSInvalidArgumentException, @"Selector unavailable in one of the objects");
          }
          
-         if ([obj2 respondsToSelector:selector])
+         obj1ReturnedValue = [obj1 performSelector:selector];
+         
+         if (![obj2 respondsToSelector:selector])
          {
-             id obj2ReturnedValue = [obj2 performSelector:selector];
-             if (obj2ReturnedValue != nil) obj2ValueIndex = [order indexOfObject:obj2ReturnedValue];
+             @throw exception(NSInvalidArgumentException, @"Selector unavailable in one of the objects");
          }
+        
+         obj2ReturnedValue = [obj2 performSelector:selector];
 #pragma clang diagnostic pop
          
-         if (obj1ValueIndex == -1 && obj2ValueIndex != -1) return NSOrderedDescending;
-         if (obj1ValueIndex != -1 && obj2ValueIndex == -1) return NSOrderedAscending;
-         if (obj1ValueIndex == -1 && obj2ValueIndex == -1) return NSOrderedSame;
-         
-         if (obj1ValueIndex > obj2ValueIndex) return NSOrderedDescending;
-         if (obj1ValueIndex < obj2ValueIndex) return NSOrderedAscending;
+         NSInteger result = comparator(obj1ReturnedValue, obj2ReturnedValue);
+         if (result > 0) return NSOrderedDescending;
+         if (result < 0) return NSOrderedAscending;
          return NSOrderedSame;
     }];
 }

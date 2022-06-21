@@ -17,9 +17,30 @@
     self = [super init];
     if (self)
     {
-        self.components = [string componentsSeparatedByString:@"."];
+        self.components = [string split:@"."];
     }
     return self;
+}
+-(nullable NSNumber*)initialIntegerValueFromString:(NSString*)string
+{
+    NSNumber* numberValue;
+    
+    @autoreleasepool
+    {
+        NSMutableString* originalString = [string mutableCopy];
+        NSMutableString* newString = [NSMutableString stringWithString:@""];
+        NSRange firstCharRange = NSMakeRange(0, 1);
+        
+        while (originalString.length > 0 && [originalString characterAtIndex:0] >= '0' && [originalString characterAtIndex:0] <= '9')
+        {
+            [newString appendString:[originalString substringWithRange:firstCharRange]];
+            [originalString deleteCharactersInRange:firstCharRange];
+        }
+        
+        if (newString.length > 0) numberValue = [[NSNumber alloc] initWithInt:newString.intValue];
+    }
+    
+    return numberValue;
 }
 -(VMMVersionCompare)compareWithVersion:(nonnull VMMVersion*)version
 {
@@ -30,10 +51,10 @@
         
         for (int x = 0; x < PKArray1.count && x < PKArray2.count; x++)
         {
-            if ([PKArray1[x] initialIntegerValue].intValue < [PKArray2[x] initialIntegerValue].intValue)
+            if ([self initialIntegerValueFromString:PKArray1[x]].intValue < [self initialIntegerValueFromString:PKArray2[x]].intValue)
                 return VMMVersionCompareSecondIsNewest;
             
-            if ([PKArray1[x] initialIntegerValue].intValue > [PKArray2[x] initialIntegerValue].intValue)
+            if ([self initialIntegerValueFromString:PKArray1[x]].intValue > [self initialIntegerValueFromString:PKArray2[x]].intValue)
                 return VMMVersionCompareFirstIsNewest;
             
             if (PKArray1[x].length > PKArray2[x].length) return VMMVersionCompareFirstIsNewest;

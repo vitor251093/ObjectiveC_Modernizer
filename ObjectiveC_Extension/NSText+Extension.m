@@ -13,11 +13,11 @@
 #import "VMMComputerInformation.h"
 
 @implementation NSText (VMMText)
--(void)setSelectedRangeAsTheBeginOfTheField
+-(void)resetSelectedRangeToStart
 {
     [self setSelectedRange:NSMakeRange(0,0)];
 }
--(void)setSelectedRangeAsTheEndOfTheField
+-(void)resetSelectedRangeToEnd
 {
     [self setSelectedRange:NSMakeRange(self.string.length,0)];
 }
@@ -62,17 +62,13 @@
 @end
 
 @implementation NSTextField (VMMTextField)
--(void)setSelectedRangeAsTheBeginOfTheField
+-(void)resetSelectedRangeToStart
 {
-    [[self currentEditor] setSelectedRangeAsTheBeginOfTheField];
+    [[self currentEditor] resetSelectedRangeToStart];
 }
--(void)setSelectedRangeAsTheEndOfTheField
+-(void)resetSelectedRangeToEnd
 {
-    [[self currentEditor] setSelectedRangeAsTheEndOfTheField];
-}
--(void)setAnyStringValue:(NSString*)stringValue
-{
-    [self setStringValue:stringValue ? stringValue : @""];
+    [[self currentEditor] resetSelectedRangeToEnd];
 }
 @end
 

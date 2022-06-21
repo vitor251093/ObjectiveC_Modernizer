@@ -15,7 +15,7 @@
 
 -(instancetype)initWithString:(NSString*)str fontNamed:(NSString*)fontName size:(CGFloat)size;
 
--(void)replaceOccurrencesOfString:(NSString*)oldString withString:(NSString*)newString;
+-(void)replace:(NSString*)oldString with:(NSString*)newString;
 
 -(void)addAttribute:(NSString *)name value:(id)value;
 -(void)setRegularFont:(NSString*)regFont boldFont:(NSString*)boldFont italicFont:(NSString*)italicFont boldAndItalicFont:(NSString*)biFont size:(CGFloat)fontSize;

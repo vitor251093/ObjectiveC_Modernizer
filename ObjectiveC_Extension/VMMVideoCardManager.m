@@ -132,7 +132,7 @@
                             hexDeviceIDString = [NSString stringWithFormat:@"0x%@%@",firstPart,secondPart];
                             hexDeviceIDString = hexDeviceIDString.lowercaseString;
                             
-                            if ([hexDeviceIDString matchesWithRegex:@"0x[0-9a-f]{4}"])
+                            if ([hexDeviceIDString matches:@"0x[0-9a-f]{4}"])
                             {
                                 graphicCardDict[VMMVideoCardDeviceIDKey] = hexDeviceIDString;
                             }
@@ -150,7 +150,7 @@
                             vendorIDString = [NSString stringWithFormat:@"0x%@%@",firstPart,secondPart];
                             vendorIDString = vendorIDString.lowercaseString;
                             
-                            if ([vendorIDString matchesWithRegex:@"0x[0-9a-f]{4}"])
+                            if ([vendorIDString matches:@"0x[0-9a-f]{4}"])
                             {
                                 graphicCardDict[VMMVideoCardVendorIDKey] = vendorIDString;
                             }
@@ -297,10 +297,16 @@
             
             [videoCards sortUsingDescriptors:@[[[NSSortDescriptor alloc] initWithKey:@"memorySizeInMegabytes" ascending:NO]]];
             
+            NSArray* vendorIdOrder = @[VMMVideoCardVendorIDATIAMD, VMMVideoCardVendorIDNVIDIA, VMMVideoCardVendorIDIntel];
+            NSArray* busOrder = @[VMMVideoCardBusPCIe, VMMVideoCardBusPCI, VMMVideoCardBusBuiltIn];
             [videoCards sortBySelector:@selector(vendorID)
-                               inOrder:@[VMMVideoCardVendorIDATIAMD, VMMVideoCardVendorIDNVIDIA, VMMVideoCardVendorIDIntel]];
+                       usingComparator:^NSInteger(NSString* _Nonnull vendor1, NSString* _Nonnull vendor2) {
+                return [vendorIdOrder indexOfObject:vendor1] - [vendorIdOrder indexOfObject:vendor2];
+            }];
             [videoCards sortBySelector:@selector(bus)
-                               inOrder:@[VMMVideoCardBusPCIe, VMMVideoCardBusPCI, VMMVideoCardBusBuiltIn]];
+                       usingComparator:^NSInteger(NSString* _Nonnull bus1, NSString* _Nonnull bus2) {
+                return [busOrder indexOfObject:bus1] - [busOrder indexOfObject:bus2];
+            }];
             
             [videoCards sortUsingDescriptors:@[[[NSSortDescriptor alloc] initWithKey:@"isComplete"    ascending:NO]]];
             [videoCards sortUsingDescriptors:@[[[NSSortDescriptor alloc] initWithKey:@"isExternalGpu" ascending:NO]]];

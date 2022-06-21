@@ -11,9 +11,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSTask (VMMTask)
-
-+(NSArray*)componentsFromFlagsString:(NSString*)initialFlags;
+@interface NSTask (VMMNSTask)
 
 +(NSString*)runCommand:(NSArray<NSString*>*)programAndFlags;
 +(NSString*)runCommand:(NSArray<NSString*>*)programAndFlags atRunPath:(NSString*)path;

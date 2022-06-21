@@ -27,7 +27,6 @@ extern NSArray* MTLCopyAllDevices(void) __attribute__((weak_import));
 @implementation VMMComputerInformation
 
 static unsigned int _systemProfilerRequestTimeOut = 15;
-static unsigned int _appleSupportMacModelRequestTimeOut = 5;
 
 +(nullable NSArray<NSDictionary*>*)systemProfilerItemsForDataType:(nonnull NSString*)dataType
 {
@@ -173,7 +172,7 @@ static unsigned int _appleSupportMacModelRequestTimeOut = 5;
         NSString* ps = [NSTask runCommand:@[@"ps", @"-A", @"-o" ,@"%cpu"]];
         ps = [ps stringByReplacingOccurrencesOfString:@"," withString:@"."];
         
-        for (NSString* process in [ps componentsSeparatedByString:@"\n"])
+        for (NSString* process in [ps split:@"\n"])
         {
             cpuUsageSum += [[[process mutableCopy] trim] doubleValue];
         }
@@ -222,40 +221,6 @@ static unsigned int _appleSupportMacModelRequestTimeOut = 5;
                     }
                 }
             }
-            
-            if (macModel == nil)
-            {
-                NSString* macSerial = self.hardwareDictionary[@"serial_number"];
-                
-                if (macSerial != nil && macSerial.length >= 8)
-                {
-                    // Depending on if your serial numer is 11 or 12 characters long; take the last 3 or 4 characters
-                    macSerial = [macSerial substringFromIndex:8];
-                    
-                    NSString* macInfoURL = [NSString stringWithFormat:@"http://support-sp.apple.com/sp/product?cc=%@",macSerial];
-                    
-                    __block NSString* macInfo = nil;
-                    [NSString stringWithContentsOfURL:[NSURL URLWithString:macInfoURL] encoding:NSUTF8StringEncoding
-                                      timeoutInterval:_appleSupportMacModelRequestTimeOut withCompletionHandler:
-                     ^(NSUInteger statusCode, NSString *string, NSError *error)
-                    {
-                        if (!error && statusCode >= 200 && statusCode < 300)
-                        {
-                            macInfo = string;
-                        }
-                    }];
-                    
-                    if (macInfo != nil && macInfo.length > 0)
-                    {
-                        macModel = [macInfo getFragmentAfter:@"<configCode>" andBefore:@"</configCode>"];
-                        
-                        if (macModel.length == 0)
-                        {
-                            macModel = nil;
-                        }
-                    }
-                }
-            }
                 
             if (macModel == nil)
             {
@@ -279,7 +244,7 @@ static unsigned int _appleSupportMacModelRequestTimeOut = 5;
     NSString* completeMacOsVersion = [self completeMacOsVersion];
     if (completeMacOsVersion == nil) return nil;
     
-    NSArray* components = [completeMacOsVersion componentsSeparatedByString:@"."];
+    NSArray* components = [completeMacOsVersion split:@"."];
     if (components.count < 2) return nil;
     
     return [NSString stringWithFormat:@"%@.%@",components[0],components[1]];
@@ -380,7 +345,7 @@ static unsigned int _appleSupportMacModelRequestTimeOut = 5;
     dispatch_once(&onceToken, ^{
         // Obtaining a string with the usergroups of the current user
         NSString* usergroupsString = [NSTask runCommand:@[@"id", @"-G"]];
-        userGroups = [usergroupsString componentsSeparatedByString:@" "];
+        userGroups = [usergroupsString split:@" "];
     });
     
     return [userGroups containsObject:[NSString stringWithFormat:@"%d",userGroup]];
@@ -392,6 +357,9 @@ static unsigned int _appleSupportMacModelRequestTimeOut = 5;
 }
 +(BOOL)are32bitProcessesEnabled
 {
+    if (IS_SYSTEM_MAC_OS_11_0_OR_SUPERIOR) {
+        return false;
+    }
     return [[NSTask runCommand:@[@"nvram", @"boot-args"]] contains:@"no32exec=0"];
 }
 

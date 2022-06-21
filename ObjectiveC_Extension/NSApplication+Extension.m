@@ -18,7 +18,7 @@
 
 +(void)restart
 {
-    [NSTask runProgram:@"open" withFlags:@[@"-n", [[NSBundle originalMainBundle] bundlePath]]];
+    [NSTask runProgram:@"open" withFlags:@[@"-n", [[NSBundle realMainBundle] bundlePath]]];
     exit(0);
 }
 
@@ -32,23 +32,23 @@
     }
     
     if ([[NSLocale availableLocaleIdentifiers] containsObject:language] == false) {
-        NSDebugLog(@"'%@' is not a valid locale identifier", language);
+        @throw exception(NSInvalidArgumentException, [NSString stringWithFormat:@"Invalid locale identifier '%@'", language]);
         return;
     }
     
-    if ([[[NSBundle originalMainBundle] localizations] containsObject:language] == false) {
-        NSDebugLog(@"That application does not support '%@'", language);
+    if ([[[NSBundle realMainBundle] localizations] containsObject:language] == false) {
+        @throw exception(NSInvalidArgumentException, [NSString stringWithFormat:@"Unavailable locale identifier '%@'", language]);
         return;
     }
     
-    if ([[[NSBundle originalMainBundle] preferredLocalizations] containsObject:language]) {
+    if ([[[NSBundle realMainBundle] preferredLocalizations] containsObject:language]) {
         return;
     }
     
     NSTask *task = [[NSTask alloc] init];
     [task setLaunchPath:@"/bin/sh"];
     NSString *cmd = [NSString stringWithFormat:@"/usr/bin/open %@ %@ %@ %@ %@",
-                     @"-n", @"-a", [[[NSBundle originalMainBundle] bundlePath] stringByReplacingOccurrencesOfString:@" " withString:@"\\ "],
+                     @"-n", @"-a", [[[NSBundle realMainBundle] bundlePath] stringByReplacingOccurrencesOfString:@" " withString:@"\\ "],
                      @"--args", [NSString stringWithFormat:@"-AppleLanguages '(%@)'",language]];
     [task setArguments:[NSArray arrayWithObjects:@"-c", cmd, nil]];
     [task launch];
@@ -58,7 +58,7 @@
 
 +(nullable VMMAppearanceName)appearance
 {
-    if (VMMAppearanceDarkPreMojaveCompatible == false) {
+    if (VMMAppearanceCompatible == false) {
         return nil;
     }
     
@@ -71,8 +71,11 @@
 }
 +(BOOL)setAppearance:(nullable VMMAppearanceName)appearance
 {
-    if (VMMAppearanceDarkPreMojaveCompatible == false) {
+    if (VMMAppearanceCompatible == false) {
         return false;
+    }
+    if (!VMMAppearanceDarkCompatible && [appearance isEqualToString:VMMAppearanceNameDark]) {
+        appearance = VMMAppearanceNameDarkPreMojave;
     }
     
     @try {
