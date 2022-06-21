@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import "VMMVideoCard.h"
 
-@interface VMMVideoCardManager : NSObject
+@interface NSMVideoCardManager : NSObject
 
 /*!
  * @discussion  Returns every available information about every available video card.

@@ -14,8 +14,8 @@
 #import "NSException+Extension.h"
 #import "NSMutableString+Extension.h"
 
-#import "VMMComputerInformation.h"
-#import "VMMLocalizationUtility.h"
+#import "NSMComputerInformation.h"
+#import "NSMLocalizationUtility.h"
 
 @implementation NSData (VMMData)
 

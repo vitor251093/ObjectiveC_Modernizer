@@ -6,11 +6,11 @@
 //  Copyright © 2017 Vitor Marques de Miranda. All rights reserved.
 //
 
-#import "VMMVersion.h"
+#import "NSMVersion.h"
 
 #import "NSString+Extension.h"
 
-@implementation VMMVersion
+@implementation NSMVersion
 
 -(nonnull instancetype)initWithString:(nonnull NSString*)string
 {
@@ -42,7 +42,7 @@
     
     return numberValue;
 }
--(VMMVersionCompare)compareWithVersion:(nonnull VMMVersion*)version
+-(NSMVersionCompare)compareWithVersion:(nonnull NSMVersion*)version
 {
     @autoreleasepool
     {
@@ -52,28 +52,28 @@
         for (int x = 0; x < PKArray1.count && x < PKArray2.count; x++)
         {
             if ([self initialIntegerValueFromString:PKArray1[x]].intValue < [self initialIntegerValueFromString:PKArray2[x]].intValue)
-                return VMMVersionCompareSecondIsNewest;
+                return     NSMVersionCompareSecondIsNewest;
             
             if ([self initialIntegerValueFromString:PKArray1[x]].intValue > [self initialIntegerValueFromString:PKArray2[x]].intValue)
-                return VMMVersionCompareFirstIsNewest;
+                return     NSMVersionCompareFirstIsNewest;
             
-            if (PKArray1[x].length > PKArray2[x].length) return VMMVersionCompareFirstIsNewest;
-            if (PKArray1[x].length < PKArray2[x].length) return VMMVersionCompareSecondIsNewest;
+            if (PKArray1[x].length > PKArray2[x].length) return     NSMVersionCompareFirstIsNewest;
+            if (PKArray1[x].length < PKArray2[x].length) return     NSMVersionCompareSecondIsNewest;
         }
         
-        if (PKArray1.count < PKArray2.count) return VMMVersionCompareSecondIsNewest;
-        if (PKArray1.count > PKArray2.count) return VMMVersionCompareFirstIsNewest;
+        if (PKArray1.count < PKArray2.count) return     NSMVersionCompareSecondIsNewest;
+        if (PKArray1.count > PKArray2.count) return     NSMVersionCompareFirstIsNewest;
         
-        return VMMVersionCompareSame;
+        return     NSMVersionCompareSame;
     }
 }
 
-+(VMMVersionCompare)compareVersionString:(nonnull NSString*)PK1 withVersionString:(nonnull NSString*)PK2
++(NSMVersionCompare)compareVersionString:(nonnull NSString*)PK1 withVersionString:(nonnull NSString*)PK2
 {
     @autoreleasepool
     {
-        VMMVersion* version1 = [[VMMVersion alloc] initWithString:PK1];
-        VMMVersion* version2 = [[VMMVersion alloc] initWithString:PK2];
+        NSMVersion* version1 = [[NSMVersion alloc] initWithString:PK1];
+        NSMVersion* version2 = [[NSMVersion alloc] initWithString:PK2];
         
         return [version1 compareWithVersion:version2];
     }

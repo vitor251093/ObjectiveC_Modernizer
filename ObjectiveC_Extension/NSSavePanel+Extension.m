@@ -10,9 +10,9 @@
 
 #import "NSThread+Extension.h"
 
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
-#import "VMMModals.h"
+#import "NSMModals.h"
 
 @implementation NSOpenPanel (VMMOpenPanel)
 
@@ -33,7 +33,7 @@
     NSOpenPanel* openPanel = [NSOpenPanel openPanel];
     optionsForPanel(openPanel);
     
-    NSWindow* window = [VMMModals modalsWindow];
+    NSWindow* window = [NSMModals modalsWindow];
     if (window != nil)
     {
         [openPanel beginSheetModalForWindow:window completionHandler:^(NSModalResponse result)
@@ -91,7 +91,7 @@
 
 -(NSUInteger)runBackgroundThreadModalWithWindow
 {
-    NSWindow* window = [VMMModals modalsWindow];
+    NSWindow* window = [NSMModals modalsWindow];
     
     __block NSUInteger value;
     NSCondition* lock = [[NSCondition alloc] init];
@@ -138,7 +138,7 @@
     NSSavePanel* savePanel = [NSSavePanel savePanel];
     optionsForPanel(savePanel);
     
-    NSWindow* window = [VMMModals modalsWindow];
+    NSWindow* window = [NSMModals modalsWindow];
     if (window != nil)
     {
         [savePanel beginSheetModalForWindow:window completionHandler:^(NSModalResponse result)

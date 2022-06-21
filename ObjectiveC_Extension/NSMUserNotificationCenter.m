@@ -13,16 +13,16 @@
 //  TODO: Check if Growl support is working
 //
 
-#import "VMMUserNotificationCenter.h"
+#import "NSMUserNotificationCenter.h"
 
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
 #import "VMMAlert.h"
 #import "NSArray+Extension.h"
 #import "NSBundle+Extension.h"
 #import "NSFileManager+Extension.h"
 #import "NSImage+Extension.h"
-#import "VMMUUID.h"
+#import "NSMUUID.h"
 
 #import "ObjCExtensionConfig.h"
 
@@ -38,9 +38,9 @@ static NSString* const NOTIFICATION_UTILITY_SHARED_DICTIONARY_KEY = @"info";
 
 @end
 
-@implementation VMMUserNotificationCenter
+@implementation NSMUserNotificationCenter
 
-static VMMUserNotificationCenter *_sharedInstance;
+static NSMUserNotificationCenter *_sharedInstance;
 
 +(nonnull instancetype)defaultUserNotificationCenter
 {
@@ -48,7 +48,7 @@ static VMMUserNotificationCenter *_sharedInstance;
     {
         if (!_sharedInstance)
         {
-            _sharedInstance = [[VMMUserNotificationCenter alloc] init];
+            _sharedInstance = [[NSMUserNotificationCenter alloc] init];
         }
         return _sharedInstance;
     }
@@ -170,13 +170,13 @@ static VMMUserNotificationCenter *_sharedInstance;
 }
 
 
--(BOOL)deliverNotificationWithTitle:(nullable NSString*)title message:(nullable NSString*)message userInfo:(nullable NSObject*)info icon:(nullable NSImage*)icon actionButtonText:(nullable NSString*)actionButton options:(VMMUserNotificationCenterOptions)options
+-(BOOL)deliverNotificationWithTitle:(nullable NSString*)title message:(nullable NSString*)message userInfo:(nullable NSObject*)info icon:(nullable NSImage*)icon actionButtonText:(nullable NSString*)actionButton options:(NSMUserNotificationCenterOptions)options
 {
-    BOOL hasUserNotificationCenter = [VMMUserNotificationCenter isNSUserNotificationCenterAvailable];
-    BOOL hasGrowl = [VMMUserNotificationCenter isGrowlAvailable];
-    BOOL allowAlert = !(options | VMMUserNotificationNoAlert);
-    BOOL preferGrowl = (options | VMMUserNotificationPreferGrowl);
-    BOOL allowNotificationWithNoAction = !(options | VMMUserNotificationOnlyWithAction);
+    BOOL hasUserNotificationCenter = [NSMUserNotificationCenter isNSUserNotificationCenterAvailable];
+    BOOL hasGrowl = [NSMUserNotificationCenter isGrowlAvailable];
+    BOOL allowAlert = !(options | NSMUserNotificationNoAlert);
+    BOOL preferGrowl = (options | NSMUserNotificationPreferGrowl);
+    BOOL allowNotificationWithNoAction = !(options | NSMUserNotificationOnlyWithAction);
     
     // Growl (preference)
     if (hasGrowl && preferGrowl && allowNotificationWithNoAction)
@@ -234,7 +234,7 @@ static VMMUserNotificationCenter *_sharedInstance;
     return FALSE;
 }
 
--(BOOL)deliverNotificationWithTitle:(nullable NSString*)title message:(nullable NSString*)message icon:(nullable NSImage*)icon options:(VMMUserNotificationCenterOptions)options
+-(BOOL)deliverNotificationWithTitle:(nullable NSString*)title message:(nullable NSString*)message icon:(nullable NSImage*)icon options:(NSMUserNotificationCenterOptions)options
 {
     return [self deliverNotificationWithTitle:title message:message userInfo:nil icon:icon actionButtonText:nil options:options];
 }

@@ -6,9 +6,9 @@
 //  Copyright © 2018 VitorMM. All rights reserved.
 //
 
-#import "VMMPropertyList.h"
+#import "NSMPropertyList.h"
 
-@implementation VMMPropertyList
+@implementation NSMPropertyList
 
 +(nullable id)propertyListWithUnarchivedString:(nonnull NSString*)string
 {

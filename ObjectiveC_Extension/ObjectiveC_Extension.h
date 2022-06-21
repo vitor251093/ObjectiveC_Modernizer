@@ -50,26 +50,26 @@ FOUNDATION_EXPORT const unsigned char ObjectiveC_ExtensionVersionString[];
 
 // Utilities
 #import <ObjectiveC_Extension/NKFTPManager.h>
-#import <ObjectiveC_Extension/VMMComputerInformation.h>
+#import <ObjectiveC_Extension/NSMComputerInformation.h>
 #import <ObjectiveC_Extension/VMMVideoCard.h>
-#import <ObjectiveC_Extension/VMMVideoCardManager.h>
+#import <ObjectiveC_Extension/NSMVideoCardManager.h>
 #import <ObjectiveC_Extension/VMMDockProgressIndicator.h>
-#import <ObjectiveC_Extension/VMMJSON.h>
-#import <ObjectiveC_Extension/VMMLocalizationUtility.h>
+#import <ObjectiveC_Extension/NSMJSON.h>
+#import <ObjectiveC_Extension/NSMLocalizationUtility.h>
 #import <ObjectiveC_Extension/VMMLogUtility.h>
-#import <ObjectiveC_Extension/VMMModals.h>
-#import <ObjectiveC_Extension/VMMParentalControls.h>
-#import <ObjectiveC_Extension/VMMPropertyList.h>
-#import <ObjectiveC_Extension/VMMTask.h>
-#import <ObjectiveC_Extension/VMMUserNotificationCenter.h>
-#import <ObjectiveC_Extension/VMMVersion.h>
-#import <ObjectiveC_Extension/VMMUUID.h>
+#import <ObjectiveC_Extension/NSMModals.h>
+#import <ObjectiveC_Extension/NSMParentalControls.h>
+#import <ObjectiveC_Extension/NSMPropertyList.h>
+#import <ObjectiveC_Extension/NSMTask.h>
+#import <ObjectiveC_Extension/NSMUserNotificationCenter.h>
+#import <ObjectiveC_Extension/NSMVersion.h>
+#import <ObjectiveC_Extension/NSMUUID.h>
 
 // Views
 #import <ObjectiveC_Extension/VMMKeyCaptureField.h>
 #import <ObjectiveC_Extension/VMMAlert.h>
 #import <ObjectiveC_Extension/VMMMenu.h>
 #import <ObjectiveC_Extension/VMMView.h>
-#import <ObjectiveC_Extension/VMMWebView.h>
+#import <ObjectiveC_Extension/NSMWebView.h>
 #import <ObjectiveC_Extension/VMMTextFileView.h>
 

@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface VMMJSON : NSObject
+@interface NSMJSON : NSObject
 
 +(nullable NSString*)serializeToString:(nonnull id)object;
 +(nullable NSData*)serializeToData:(nonnull id)object;

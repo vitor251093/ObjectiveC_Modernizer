@@ -15,7 +15,7 @@
 #import "ObjCExtensionConfig.h"
 #import "NSString+Extension.h"
 #import "NSMutableString+Extension.h"
-#import "VMMVideoCardManager.h"
+#import "NSMVideoCardManager.h"
 #import <OpenGL/OpenGL.h>
 
 @implementation VMMVideoCard
@@ -526,7 +526,7 @@
             
             if (memSizeInt < VMMVideoCardMemoryMinimumSize)
             {
-                NSInteger numberOfVideoCards = [VMMVideoCardManager videoCardsWithKext].count;
+                NSInteger numberOfVideoCards = [NSMVideoCardManager videoCardsWithKext].count;
                 if (numberOfVideoCards == 1 && self.kextLoaded)
                 {
                     NSArray<NSNumber*>* apiValues = _dictionary[VMMVideoCardTemporaryKeyOpenGlApiMemorySizes];
@@ -549,7 +549,7 @@
                 {
                     NSString* type = self.type ? self.type : @"";
                     NSString* deviceID = self.deviceID ? self.deviceID : @"";
-                    long long int ramMemoryGbSize = ((([VMMComputerInformation ramMemorySize]/1024)/1024)/1024);
+                    long long int ramMemoryGbSize = ((([NSMComputerInformation ramMemorySize]/1024)/1024)/1024);
                     
                     if ([type isEqualToString:VMMVideoCardTypeApple])
                     {

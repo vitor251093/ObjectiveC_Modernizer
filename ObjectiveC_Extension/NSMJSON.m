@@ -6,16 +6,16 @@
 //  Copyright © 2022 VitorMM. All rights reserved.
 //
 
-#import "VMMJSON.h"
+#import "NSMJSON.h"
 
 #import "SZJsonParser.h"
 
 #import "NSException+Extension.h"
 #import "NSMutableString+Extension.h"
 
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
-@implementation VMMJSON
+@implementation NSMJSON
 
 +(nullable NSString*)serializeToString:(nonnull id)object
 {

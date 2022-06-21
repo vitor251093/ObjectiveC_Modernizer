@@ -10,22 +10,22 @@
 #import <WebKit/WebKit.h>
 
 #import "VMMView.h"
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
 #define VMMWebViewSupportsHTML5     IS_SYSTEM_MAC_OS_10_9_OR_SUPERIOR
 
-@interface VMMWebViewNavigationBar : VMMView
+@interface NSMWebViewNavigationBar : VMMView
 @property (nonatomic, strong, nullable) NSTextField* addressBarField;
 @property (nonatomic, strong, nullable) NSButton* refreshButton;
 @end
 
-@interface VMMWebView : VMMView
+@interface NSMWebView : VMMView
 
 @property (nonatomic) BOOL hideNavigationBar;
 @property (nonatomic) BOOL urlLoaded;
 @property (nonatomic) BOOL usingWkWebView;
 @property (nonatomic, strong, nullable) NSView* webView;
-@property (nonatomic, strong, nullable) VMMWebViewNavigationBar* navigationBar;
+@property (nonatomic, strong, nullable) NSMWebViewNavigationBar* navigationBar;
 @property (nonatomic, strong, nullable) NSTextField* webViewErrorLabel;
 
 @property (nonatomic, strong, nullable) NSURL* lastAccessedUrl;

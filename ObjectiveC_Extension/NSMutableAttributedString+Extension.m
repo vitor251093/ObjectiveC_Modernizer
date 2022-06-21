@@ -8,7 +8,7 @@
 
 #import "NSMutableAttributedString+Extension.h"
 
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
 @implementation NSMutableAttributedString (VMMMutableAttributedString)
 

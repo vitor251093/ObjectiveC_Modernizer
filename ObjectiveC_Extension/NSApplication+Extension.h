@@ -10,7 +10,7 @@
 #define NSApplication_Extension_Class
 
 #import <Cocoa/Cocoa.h>
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
 #define VMMAppearanceCompatible     IS_SYSTEM_MAC_OS_10_10_OR_SUPERIOR
 #define VMMAppearanceDarkCompatible IS_SYSTEM_MAC_OS_10_14_OR_SUPERIOR

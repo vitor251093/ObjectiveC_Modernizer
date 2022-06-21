@@ -12,7 +12,7 @@
 #import "NSTask+Extension.h"
 #import "NSException+Extension.h"
 #import "VMMLogUtility.h"
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
 @implementation NSApplication (VMMApplication)
 
@@ -24,7 +24,7 @@
 
 +(void)restartInLanguage:(nonnull NSString*)language
 {
-    if ([VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.6.2"] == false) {
+    if ([NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.6.2"] == false) {
         // The '--args' parameter in 'open' was only introduced in macOS 10.6.2
         // Reference: https://superuser.com/a/116237
         

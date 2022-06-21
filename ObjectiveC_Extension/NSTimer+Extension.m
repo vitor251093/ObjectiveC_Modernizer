@@ -7,7 +7,7 @@
 //
 
 #import "NSTimer+Extension.h"
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
 @implementation VMMTimerListener
 

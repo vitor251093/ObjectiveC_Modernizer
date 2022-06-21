@@ -10,7 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
 static NSString * _Nonnull const VMMVideoCardModelNameKey =                  @"sppci_model";
 static NSString * _Nonnull const VMMVideoCardChipsetNameKey =                @"_name";

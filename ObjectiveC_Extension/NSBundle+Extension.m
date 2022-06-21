@@ -14,7 +14,7 @@
 #import "NSString+Extension.h"
 #import "NSUserDefaults+Extension.h"
 
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
 #include <stdlib.h>
 #import <objc/runtime.h>

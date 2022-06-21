@@ -8,7 +8,7 @@
 
 #import "NSUserDefaults+Extension.h"
 
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 #import "VMMLogUtility.h"
 
 @implementation NSUserDefaults (VMMUserDefaults)
@@ -31,7 +31,7 @@
     // Reference:
     // https://egpu.io/forums/mac-setup/potentially-accelerate-all-applications-on-egpu-macos-10-13-4/
     
-    if ([VMMComputerInformation macOsCompatibilityWithExternalGPU] != VMMExternalGPUCompatibilityWithMacOS_Supported) {
+    if ([NSMComputerInformation macOsCompatibilityWithExternalGPU] != VMMExternalGPUCompatibilityWithMacOS_Supported) {
         NSDebugLog(@"\"Prefer External GPU\" was not available prior to macOS 10.13.4. Using that probably wont't change anything.");
     }
     
@@ -40,7 +40,7 @@
 }
 -(void)setPreferExternalGPU:(BOOL)prefer
 {
-    if ([VMMComputerInformation macOsCompatibilityWithExternalGPU] != VMMExternalGPUCompatibilityWithMacOS_Supported) {
+    if ([NSMComputerInformation macOsCompatibilityWithExternalGPU] != VMMExternalGPUCompatibilityWithMacOS_Supported) {
         NSDebugLog(@"\"Prefer External GPU\" was not available prior to macOS 10.13.4. Using that probably wont't change anything.");
     }
     

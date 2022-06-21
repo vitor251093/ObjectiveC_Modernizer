@@ -6,18 +6,18 @@
 //  Copyright © 2018 VitorMM. All rights reserved.
 //
 
-#import "VMMVideoCardManager.h"
+#import "NSMVideoCardManager.h"
 
 #import "NSMutableArray+Extension.h"
 #import "NSArray+Extension.h"
 #import "NSString+Extension.h"
 #import "VMMLogUtility.h"
 
-@implementation VMMVideoCardManager
+@implementation NSMVideoCardManager
 
 +(NSMutableArray<VMMVideoCard*>* _Nonnull)systemProfilerVideoCards
 {
-    NSArray* displayOutput = [VMMComputerInformation systemProfilerItemsForDataType:SPDisplaysDataType];
+    NSArray* displayOutput = [NSMComputerInformation systemProfilerItemsForDataType:SPDisplaysDataType];
     if (displayOutput == nil) {
         return [[NSMutableArray alloc] init];
     }

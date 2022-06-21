@@ -14,7 +14,7 @@
 #import "NSFileManager+Extension.h"
 
 #import "VMMLogUtility.h"
-#import "VMMLocalizationUtility.h"
+#import "NSMLocalizationUtility.h"
 
 @implementation NSTask (VMMNSTask)
 

@@ -6,9 +6,9 @@
 //  Copyright © 2018 VitorMM. All rights reserved.
 //
 
-#import "VMMParentalControls.h"
+#import "NSMParentalControls.h"
 
-#import "VMMPropertyList.h"
+#import "NSMPropertyList.h"
 
 #import "NSBundle+Extension.h"
 #import "NSString+Extension.h"
@@ -28,7 +28,7 @@ static NSString* _Nonnull const VMMParentalControlsContentFilterBlackList       
 static NSString* _Nonnull const VMMParentalControlsApplicationAccessWhiteListPath = @"path";
 static NSString* _Nonnull const VMMParentalControlsContentFilterWhiteListAddress  = @"address";
 
-@implementation VMMParentalControls
+@implementation NSMParentalControls
 
 +(BOOL)isEnabled
 {
@@ -51,7 +51,7 @@ static NSString* _Nonnull const VMMParentalControlsContentFilterWhiteListAddress
         NSString* dsclOutputString = [NSTask runProgram:@"dscl" withFlags:@[@".", @"mcxexport", NSHomeDirectory(), appDomain, keyName]];
         if (dsclOutputString == nil || dsclOutputString.isEmpty) return nil;
         
-        NSDictionary* dsclOutput = [VMMPropertyList propertyListWithArchivedString:dsclOutputString];
+        NSDictionary* dsclOutput = [NSMPropertyList propertyListWithArchivedString:dsclOutputString];
         if (dsclOutput == nil || [dsclOutput isKindOfClass:[NSDictionary class]] == FALSE) return nil;
         
         NSDictionary* dict = dsclOutput[appDomain][keyName];
@@ -63,21 +63,21 @@ static NSString* _Nonnull const VMMParentalControlsContentFilterWhiteListAddress
 
 +(BOOL)iTunesMatureGamesAllowed
 {
-    VMMParentalControlsItunesGamesAgeRestriction value = [self iTunesAgeRestrictionForGames];
-    return value == VMMParentalControlsItunesGamesAgeRestrictionNone ||
-           value == VMMParentalControlsItunesGamesAgeRestriction17;
+    NSMParentalControlsItunesGamesAgeRestriction value = [self iTunesAgeRestrictionForGames];
+    return value == NSMParentalControlsItunesGamesAgeRestrictionNone ||
+           value == NSMParentalControlsItunesGamesAgeRestriction17;
 }
-+(VMMParentalControlsItunesGamesAgeRestriction)iTunesAgeRestrictionForGames
++(NSMParentalControlsItunesGamesAgeRestriction)iTunesAgeRestrictionForGames
 {
     NSNumber* valueNumber = [self parentalControlsValueForAppWithDomain:VMMParentalControlsAppDomainItunes
                                                                 keyName:VMMParentalControlsItunesGamesAgeLimit];
     if (valueNumber == nil || [valueNumber isKindOfClass:[NSNumber class]] == FALSE)
-        return VMMParentalControlsItunesGamesAgeRestrictionNone;
+        return NSMParentalControlsItunesGamesAgeRestrictionNone;
     
     NSInteger value = valueNumber.integerValue;
-    if (value == 0) return VMMParentalControlsItunesGamesAgeRestrictionNone;
+    if (value == 0) return NSMParentalControlsItunesGamesAgeRestrictionNone;
     
-    return (VMMParentalControlsItunesGamesAgeRestriction)value;
+    return (NSMParentalControlsItunesGamesAgeRestriction)value;
 }
 
 +(BOOL)isAppRestrictionEnabled

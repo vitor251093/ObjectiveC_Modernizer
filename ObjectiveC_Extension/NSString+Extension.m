@@ -17,10 +17,10 @@
 #import "NSFileManager+Extension.h"
 #import "NSMutableString+Extension.h"
 
-#import "VMMComputerInformation.h"
-#import "VMMJSON.h"
-#import "VMMLocalizationUtility.h"
-#import "VMMUUID.h"
+#import "NSMComputerInformation.h"
+#import "NSMJSON.h"
+#import "NSMLocalizationUtility.h"
+#import "NSMUUID.h"
 
 @implementation NSString (VMMString)
 

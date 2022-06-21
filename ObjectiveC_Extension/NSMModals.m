@@ -6,9 +6,9 @@
 //  Copyright © 2017 VitorMM. All rights reserved.
 //
 
-#import "VMMModals.h"
+#import "NSMModals.h"
 
-@implementation VMMModals
+@implementation NSMModals
 
 static NSWindow* _alertsWindow;
 

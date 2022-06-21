@@ -6,19 +6,19 @@
 //  Copyright © 2017 VitorMM. All rights reserved.
 //
 
-#import "VMMWebView.h"
+#import "NSMWebView.h"
 
 #import "NSColor+Extension.h"
 #import "NSString+Extension.h"
 #import "NSMutableAttributedString+Extension.h"
 
-#import "VMMComputerInformation.h"
-#import "VMMLocalizationUtility.h"
+#import "NSMComputerInformation.h"
+#import "NSMLocalizationUtility.h"
 
-@implementation VMMWebViewNavigationBar
+@implementation NSMWebViewNavigationBar
 @end
 
-@implementation VMMWebView
+@implementation NSMWebView
 
 -(void)setLastAccessedUrl:(NSURL*)lastAccessedUrl
 {
@@ -146,7 +146,7 @@
 }
 -(void)initializeNavigationBarWithHeight:(CGFloat)navigationBarHeight
 {
-    _navigationBar = [[VMMWebViewNavigationBar alloc] init];
+    _navigationBar = [[NSMWebViewNavigationBar alloc] init];
     
     [self addSubview:_navigationBar];
     [_navigationBar setAutoresizingMask:NSViewMinYMargin|NSViewMaxXMargin|NSViewMinXMargin|NSViewWidthSizable];

@@ -10,7 +10,7 @@
 
 #import "NSMutableAttributedString+Extension.h"
 
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
 @implementation NSText (VMMText)
 -(void)resetSelectedRangeToStart

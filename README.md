@@ -492,7 +492,7 @@ Creates an "Ok/Cancel input alert" with the specified title, message and default
 
 Creates an "Multiple buttons alert" with the specified title, message and options (which will become squared buttons with the icon specified in the block). The selected option will be returned by the function. That alert uses the thread safe modal.
 
-### VMMComputerInformation
+### NSMComputerInformation
 Used to retrieve informations about the computer hardware and software.
 
 ```objectivec
@@ -724,7 +724,7 @@ Check if Parental Controls are enabled for the actual users.
 Return `true` if the user is allowed to play mature rated games.
 
 ```objectivec
-+(VMMParentalControlsItunesGamesAgeRestriction)iTunesAgeRestrictionForGames;
++(NSMParentalControlsItunesGamesAgeRestriction)iTunesAgeRestrictionForGames;
 ```
 
 Return the user age restriction for games (None, 4+, 9+, 12+ or 17+).

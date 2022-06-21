@@ -6,7 +6,7 @@
 //  Copyright © 2020 VitorMM. All rights reserved.
 //
 
-#import "VMMTask.h"
+#import "NSMTask.h"
 
 #import "NSFileManager+Extension.h"
 #import "NSMutableString+Extension.h"
@@ -14,9 +14,9 @@
 
 #import "VMMAlert.h"
 #import "VMMLogUtility.h"
-#import "VMMLocalizationUtility.h"
+#import "NSMLocalizationUtility.h"
 
-@implementation VMMTask
+@implementation NSMTask
 
 -(instancetype)init
 {
@@ -64,7 +64,7 @@
 {
     if (_program && ![_program hasPrefix:@"/"])
     {
-        NSString* newProgramPath = [VMMTask getPathOfProgram:_program];
+        NSString* newProgramPath = [NSMTask getPathOfProgram:_program];
         
         if (newProgramPath == nil)
         {
@@ -222,7 +222,7 @@
     
     @autoreleasepool
     {
-        programPath = [[[VMMTask alloc] initWithProgram:@"/usr/bin/type" andFlags:@[@"-a", programName]] run];
+        programPath = [[[NSMTask alloc] initWithProgram:@"/usr/bin/type" andFlags:@[@"-a", programName]] run];
         if (programPath == nil) return nil;
         
         programPath = [[programPath componentsSeparatedByString:@" "] lastObject];

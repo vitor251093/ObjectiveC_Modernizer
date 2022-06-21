@@ -6,16 +6,16 @@
 //  Copyright © 2017 VitorMM. All rights reserved.
 //
 
-#import "VMMUUID.h"
+#import "NSMUUID.h"
 
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
 NSString* _Nonnull VMMUUIDCreate(void)
 {
-    return [VMMUUID newUUIDString];
+    return [NSMUUID newUUIDString];
 }
 
-@implementation VMMUUID
+@implementation NSMUUID
 
 +(nonnull NSString*)newUUIDString
 {

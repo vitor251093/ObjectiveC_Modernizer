@@ -16,8 +16,8 @@
 #import "NSString+Extension.h"
 #import "NSThread+Extension.h"
 
-#import "VMMComputerInformation.h"
-#import "VMMLocalizationUtility.h"
+#import "NSMComputerInformation.h"
+#import "NSMLocalizationUtility.h"
 
 @implementation NSFileManager (VMMFileManager)
 

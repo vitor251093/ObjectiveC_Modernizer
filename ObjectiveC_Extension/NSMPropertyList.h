@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface VMMPropertyList : NSObject
+@interface NSMPropertyList : NSObject
 
 +(nullable id)propertyListWithUnarchivedString:(nonnull NSString*)string;
 +(nullable id)propertyListWithUnarchivedData:(nonnull NSData*)data;

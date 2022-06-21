@@ -10,7 +10,7 @@
 
 NSString* _Nonnull VMMUUIDCreate(void);
 
-@interface VMMUUID : NSObject
+@interface NSMUUID : NSObject
 
 +(nonnull NSString*)newUUIDString;
 

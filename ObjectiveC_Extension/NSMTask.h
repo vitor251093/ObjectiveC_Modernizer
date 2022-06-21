@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface VMMTask : NSObject
+@interface NSMTask : NSObject
 
 @property (nonatomic, strong, nullable) NSString* program;
 @property (nonatomic, strong, nullable) NSArray<NSString*>* flags;

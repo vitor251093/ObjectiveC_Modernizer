@@ -1,5 +1,5 @@
 //
-//  VMMComputerInformation.m
+//  NSMComputerInformation.m
 //  ObjectiveC_Extension
 //
 //  Created by Vitor Marques de Miranda on 22/02/17.
@@ -10,10 +10,10 @@
 //  https://gist.github.com/ScrimpyCat/8043890
 //
 
-#import "VMMComputerInformation.h"
+#import "NSMComputerInformation.h"
 
-#import "VMMVersion.h"
-#import "VMMPropertyList.h"
+#import "NSMVersion.h"
+#import "NSMPropertyList.h"
 
 #import "NSTask+Extension.h"
 #import "NSArray+Extension.h"
@@ -24,7 +24,7 @@
 
 extern NSArray* MTLCopyAllDevices(void) __attribute__((weak_import));
 
-@implementation VMMComputerInformation
+@implementation NSMComputerInformation
 
 static unsigned int _systemProfilerRequestTimeOut = 15;
 
@@ -33,7 +33,7 @@ static unsigned int _systemProfilerRequestTimeOut = 15;
     NSString* displayOutput = [NSTask runProgram:@"/usr/sbin/system_profiler" withFlags:@[@"-xml", @"-detailLevel", @"full", dataType]
                           waitingForTimeInterval:_systemProfilerRequestTimeOut];
     
-    NSArray* displayArray = [VMMPropertyList propertyListWithUnarchivedString:displayOutput];
+    NSArray* displayArray = [NSMPropertyList propertyListWithUnarchivedString:displayOutput];
     if (displayArray == nil)
     {
         return nil;
@@ -305,7 +305,7 @@ static unsigned int _systemProfilerRequestTimeOut = 15;
         return [macOsCompatibility[version] boolValue];
     }
     
-    BOOL compatible = [VMMVersion compareVersionString:version withVersionString:self.macOsVersion] != VMMVersionCompareFirstIsNewest;
+    BOOL compatible = [NSMVersion compareVersionString:version withVersionString:self.macOsVersion] != NSMVersionCompareFirstIsNewest;
     macOsCompatibility[version] = @(compatible);
     return compatible;
 }

@@ -1,5 +1,5 @@
 //
-//  VMMComputerInformation.h
+//  NSMComputerInformation.h
 //  ObjectiveC_Extension
 //
 //  Created by Vitor Marques de Miranda on 22/02/17.
@@ -19,20 +19,20 @@
 //  dscl . list /Groups PrimaryGroupID | tr -s ' ' | sort -n -t ' ' -k2,2
 //
 
-#ifndef VMMComputerInformation_Class
-#define VMMComputerInformation_Class
+#ifndef NSMComputerInformation_Class
+#define NSMComputerInformation_Class
 
 // Checks if macOS version is compatible
-#define IS_SYSTEM_MAC_OS_10_7_OR_SUPERIOR   [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.7"]   // Lion
-#define IS_SYSTEM_MAC_OS_10_8_OR_SUPERIOR   [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.8"]   // Mountain Lion
-#define IS_SYSTEM_MAC_OS_10_9_OR_SUPERIOR   [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.9"]   // Mavericks
-#define IS_SYSTEM_MAC_OS_10_10_OR_SUPERIOR  [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.10"]  // Yosemite
-#define IS_SYSTEM_MAC_OS_10_11_OR_SUPERIOR  [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.11"]  // El Capitan
-#define IS_SYSTEM_MAC_OS_10_12_OR_SUPERIOR  [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.12"]  // Sierra
-#define IS_SYSTEM_MAC_OS_10_13_OR_SUPERIOR  [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.13"]  // High Sierra
-#define IS_SYSTEM_MAC_OS_10_14_OR_SUPERIOR  [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.14"]  // Mojave
-#define IS_SYSTEM_MAC_OS_10_15_OR_SUPERIOR  [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.15"]  // Catalina
-#define IS_SYSTEM_MAC_OS_11_0_OR_SUPERIOR   [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"11.0"]   // Big Sur
+#define IS_SYSTEM_MAC_OS_10_7_OR_SUPERIOR   [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.7"]   // Lion
+#define IS_SYSTEM_MAC_OS_10_8_OR_SUPERIOR   [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.8"]   // Mountain Lion
+#define IS_SYSTEM_MAC_OS_10_9_OR_SUPERIOR   [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.9"]   // Mavericks
+#define IS_SYSTEM_MAC_OS_10_10_OR_SUPERIOR  [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.10"]  // Yosemite
+#define IS_SYSTEM_MAC_OS_10_11_OR_SUPERIOR  [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.11"]  // El Capitan
+#define IS_SYSTEM_MAC_OS_10_12_OR_SUPERIOR  [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.12"]  // Sierra
+#define IS_SYSTEM_MAC_OS_10_13_OR_SUPERIOR  [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.13"]  // High Sierra
+#define IS_SYSTEM_MAC_OS_10_14_OR_SUPERIOR  [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.14"]  // Mojave
+#define IS_SYSTEM_MAC_OS_10_15_OR_SUPERIOR  [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.15"]  // Catalina
+#define IS_SYSTEM_MAC_OS_11_0_OR_SUPERIOR   [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"11.0"]   // Big Sur
 
 #define IS_SYSTEM_MAC_OS_LION_OR_SUPERIOR           IS_SYSTEM_MAC_OS_10_7_OR_SUPERIOR
 #define IS_SYSTEM_MAC_OS_MOUNTAIN_LION_OR_SUPERIOR  IS_SYSTEM_MAC_OS_10_8_OR_SUPERIOR
@@ -196,8 +196,8 @@
 #define IsClassPHProjectChangeRequestAvailable          IS_SYSTEM_MAC_OS_10_13_OR_SUPERIOR
 #define IsClassPHProjectInfoAvailable                   IS_SYSTEM_MAC_OS_10_13_OR_SUPERIOR
 
-#define IsClassNSTouchBarAvailable                      [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.12.2"]
-#define IsClassAVRouteDetectorAvailable                 [VMMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.13.2"]
+#define IsClassNSTouchBarAvailable                      [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.12.2"]
+#define IsClassAVRouteDetectorAvailable                 [NSMComputerInformation isSystemMacOsEqualOrSuperiorTo:@"10.13.2"]
 
 
 #import <Foundation/Foundation.h>
@@ -299,7 +299,7 @@ typedef NS_ENUM(NSUInteger, VMMExternalGPUCompatibilityWithMacOS)
 };
 
 
-@interface VMMComputerInformation : NSObject
+@interface NSMComputerInformation : NSObject
 
 +(nullable NSArray<NSDictionary*>*)systemProfilerItemsForDataType:(nonnull NSString*)dataType;
     
