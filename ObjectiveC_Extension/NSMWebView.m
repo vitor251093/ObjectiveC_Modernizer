@@ -73,9 +73,12 @@
 // Initialization private methods
 -(void)initializeWebView
 {
-    _usingWkWebView = IsClassWKWebViewAvailable;
+    if (_webView != nil)
+    {
+        return;
+    }
     
-    if (_usingWkWebView)
+    if (IsClassWKWebViewAvailable)
     {
         _webView = [[WKWebView alloc] init];
         WKWebView* webView = (WKWebView*)_webView;
@@ -135,25 +138,18 @@
 {
     @synchronized(self)
     {
-        BOOL loadingForTheFirstTime = (_webView == nil);
+        [self initializeWebView];
         
         CGFloat width = self.frame.size.width;
-        
-        if (loadingForTheFirstTime)
-        {
-            [self initializeWebView];
-        }
-        
-        CGFloat webViewHeight = self.frame.size.height;
-        
-        [_webView setFrame:NSMakeRect(0, 0, width, webViewHeight)];
+        CGFloat height = self.frame.size.height;
+        [_webView setFrame:NSMakeRect(0, 0, width, height)];
     }
 }
 
 // Public functions
 -(BOOL)loadURL:(nonnull NSURL*)url
 {
-    if (!_usingWkWebView && [url.absoluteString contains:@"://www.youtube.com/v/"])
+    if (!IsClassWKWebViewAvailable && [url.absoluteString contains:@"://www.youtube.com/v/"])
     {
         NSString* mainFolderPluginPath = @"/Library/Internet Plug-Ins/Flash Player.plugin";
         NSString* userFolderPluginPath = [NSString stringWithFormat:@"%@%@",NSHomeDirectory(),mainFolderPluginPath];
@@ -165,10 +161,9 @@
         }
     }
     
-    _urlLoaded = true;
     [self reloadWebViewIfNeeded];
     
-    if (_usingWkWebView)
+    if (IsClassWKWebViewAvailable)
     {
         [(WKWebView*)self.webView loadRequest:[NSURLRequest requestWithURL:url]];
     }
@@ -181,11 +176,11 @@
 }
 -(void)loadHTMLString:(nonnull NSString*)htmlPage
 {
-    _urlLoaded = false;
-    [self reloadWebViewIfNeeded];
     NSURL* url = [NSURL URLWithString:@"about:blank"];
     
-    if (_usingWkWebView)
+    [self reloadWebViewIfNeeded];
+    
+    if (IsClassWKWebViewAvailable)
     {
         [(WKWebView*)self.webView loadHTMLString:htmlPage baseURL:url];
     }

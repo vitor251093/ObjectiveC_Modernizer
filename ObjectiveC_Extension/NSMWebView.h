@@ -16,8 +16,6 @@
 
 @interface NSMWebView : VMMView
 
-@property (nonatomic) BOOL urlLoaded;
-@property (nonatomic) BOOL usingWkWebView;
 @property (nonatomic, strong, nullable) NSView* webView;
 
 -(BOOL)loadURL:(nonnull NSURL*)url;
